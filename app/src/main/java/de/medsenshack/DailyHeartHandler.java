@@ -1,7 +1,8 @@
 package de.medsenshack;
 
+import de.fau.lme.sensorlib.dataframe.SimbleeMedhackDataFrame;
 import de.fau.lme.sensorlib.sensors.BleEcgSensor;
-import de.lme.plotview.Plot;
+import de.fau.lme.plotview.Plot;
 
 /**
  * Original version by Robert Richer, Digital Sports Group, Pattern Recognition Lab, Department of Computer Science.
@@ -75,7 +76,7 @@ public interface DailyHeartHandler {
      *
      * @param data the data received from the {@link BleService}
      */
-    void onDataReceived(BleEcgSensor.BleEcgDataFrame data);
+    void onDataReceived(SimbleeMedhackDataFrame data);
 
     void onPlotMarker(Plot.PlotMarker marker, int signalId, int index);
 
