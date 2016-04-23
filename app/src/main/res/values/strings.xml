@@ -1,4 +1,140 @@
 <resources>
     <string name="app_name">Medsenshack</string>
     <string name="action_settings">Settings</string>
+
+    <!-- Activity names -->
+    <string name="title_activity_history">DailyHistory</string>
+    <string name="title_activity_current_hr">DailyHR</string>
+    <string name="title_activity_analyze_ecg">DailyAnalyze</string>
+    <string name="title_activity_current_hrresult">DailyResult</string>
+    <string name="title_activity_training_result">DailyResult</string>
+    <string name="title_activity_daily_train">DailyTrain</string>
+    <string name="title_activity_daily_monitor">DailyMonitor</string>
+    <string name="title_activity_history_details">HistoryDetails</string>
+    <string name="title_activity_daily_monitor_result">DailyMonitorResult</string>
+    <string name="title_activity_daily_simulate">DailySimulate</string>
+    <string name="title_activity_daily_simulate_result">DailySimulateResult</string>
+    <string name="title_activity_daily_hrv">DailyHRVActivity</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Navdrawer items -->
+    <string name="navdrawer_item_main_menu">Main Menu</string>
+    <string name="navdrawer_item_history">History</string>
+    <string name="navdrawer_item_profile">Profile</string>
+    <string name="navdrawer_item_statistics">Statistics</string>
+    <string name="navdrawer_item_settings">Settings</string>
+    <string name="navdrawer_item_about">About</string>
+    <string name="navdrawer_open">Open navigation drawer</string>
+    <string name="navdrawer_close">Close navigation drawer</string>
+
+    <!-- Status bar -->
+    <string name="status_bar_disconnected">ECG DISCONNECTED</string>
+    <string name="status_bar_connecting">ECG CONNECTING</string>
+    <string name="status_bar_connected">ECG CONNECTED</string>
+    <string name="status_bar_simulating">ECG SIMULATING</string>
+
+    <!-- Fragment Titles -->
+    <string name="title_general">General</string>
+    <string name="title_heart">Heart</string>
+    <string name="title_sport">Sport</string>
+    <string name="title_overview">Overview</string>
+    <string name="title_details">Details</string>
+    <string name="title_before">Before</string>
+    <string name="title_after">After</string>
+    <string name="title_hrv">HRV</string>
+
+
+    <!-- Menu -->
+    <string name="action_sound">Sound</string>
+
+    <!-- Preferences -->
+    <string name="pref_category_title_account">Account Preferences</string>
+    <string name="pref_category_title_ecg">ECG Preferences</string>
+    <string name="pref_category_title_other">Other Preferences</string>
+    <string name="pref_title_has_plus_profile">Plus Profile</string>
+    <string name="pref_summary_has_plus_profile">Sign up to DailyHeart using your Google+ profile</string>
+    <string name="pref_title_first_name">First Name</string>
+    <string name="pref_summary_first_name">Enter your first name</string>
+    <string name="pref_title_last_name">Last Name</string>
+    <string name="pref_summary_last_name">Enter your last name</string>
+    <string name="pref_title_birth_date">Birth Date</string>
+    <string name="pref_summary_birth_date">Enter your birth date (DD.MM.YYYY)</string>
+    <string name="pref_title_current_hr">CurrentHR Duration</string>
+    <string name="pref_summary_current_hr">Set the recording duration for CurrentHR</string>
+    <string name="pref_title_analyze_ecg">AnalyzeECG Duration</string>
+    <string name="pref_summary_analyze_ecg">Set the recording duration for AnalyzeECG</string>
+    <string name="pref_title_play_sound">Heart Beat</string>
+    <string name="pref_summary_play_sound">Enable heart beat sound</string>
+
+    <!-- Button texts -->
+    <string name="ok">OK</string>
+    <string name="button_stop">Stop</string>
+    <string name="button_pause">Pause</string>
+    <string name="button_resume">Resume</string>
+    <string name="button_save">Save</string>
+    <string name="button_remeasure">Remeasure</string>
+
+    <!-- Units -->
+    <string name="unit_bpm">bpm</string>
+    <string name="unit_ms">ms</string>
+    <string name="unit_mv_sq">mV²</string>
+
+    <!-- Record Types -->
+    <string name="record_type_current_hr">Current Heart Rate</string>
+    <string name="record_type_analyze_ecg">Analyze ECG</string>
+    <string name="record_type_daily_monitor">ECG Monitoring</string>
+    <string name="record_type_daily_train">Training Session</string>
+
+    <!-- Content Descriptions -->
+    <string name="string_current_hr">CurrentHR</string>
+    <string name="string_main_current_hr">Current\nHeart Rate</string>
+    <string name="string_analyze_ecg">AnalyzeECG</string>
+    <string name="string_main_analyze_ecg">Analyze\nECG</string>
+    <string name="string_daily_monitor">DailyMonitor</string>
+    <string name="string_main_daily_monitor">Monitor\nECG</string>
+    <string name="string_daily_train">DailyTrain</string>
+    <string name="string_main_daily_train">Start\nTraining</string>
+    <string name="string_daily_simulate">DailySimulate</string>
+    <string name="string_main_daily_simulate">Simulate\nRecords</string>
+    <string name="string_daily_hrv">DailyHRV</string>
+    <string name="string_main_daily_hrv">Heart Rate\nVariability</string>
+    <string name="string_heart">Heart</string>
+    <string name="string_fab">FAB</string>
+    <string name="string_hr_curr">Curr HR</string>
+    <string name="string_hr_avg">Avg HR</string>
+    <string name="string_rr_avg">Avg RR</string>
+    <string name="string_hr_min_max">Min/Max HR</string>
+    <string name="string_qrsta_avg">Avg QRSTA</string>
+    <string name="string_num_normal">Num Beats</string>
+    <string name="string_num_arr">Num Arr</string>
+    <string name="string_hr_map">HR Map</string>
+    <string name="string_heart_status">Heart Status</string>
+    <string name="string_record_type">Record Type</string>
+    <string name="string_icon">Icon</string>
+    <string name="string_profile_image">Profile Image</string>
+
+    <!-- Other -->
+    <string name="string_minus">–</string>
+    <string name="zeros_2">00</string>
+    <string name="string_start">Start:</string>
+    <string name="string_duration">Duration:</string>
+    <string name="string_john_doe">John Doe</string>
+    <string name="string_mit_bih">MIT-BIH</string>
+    <string name="string_dailyheart_capital">DAILYHEART</string>
+
+
+    <!-- Placeholders -->
+    <string name="placeholder_slash"> / %1$s</string>
+    <string name="placeholder_percent">%1$s %%</string>
+    <string name="placeholder_pipe">%1$s | %2$s</string>
+    <string name="placeholder_std_rr">Avg. Std: %1$s</string>
+    <string name="placeholder_rms_sd">RMS SD: %1$s</string>
+    <string name="placeholder_std_sd">Std SD: %1$s</string>
+    <string name="placeholder_rr_50">RR50: %1$s (%2$s %%)</string>
+    <string name="placeholder_rr_20">RR20: %1$s (%2$s %%)</string>
+    <string name="placeholder_rr_total">Total RR: %1$s</string>
+    <string name="placeholder_orientation">Pitch: %1$s°</string>
+    <string name="placeholder_steps">Steps: %1$s</string>
+    <string name="title_activity_daily_hrv_result">DailyHrvResult</string>
+    <string name="title_activity_simblee">SimbleeActivity</string>
 </resources>

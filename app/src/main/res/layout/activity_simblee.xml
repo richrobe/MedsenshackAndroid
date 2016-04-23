@@ -1,0 +1,79 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/grey_300"
+    tools:context=".SimbleeActivity">
+
+    <de.medsenshack.StatusBar xmlns:status_bar="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/status_bar"
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:layout_alignParentTop="true"
+        status_bar:status="disconnected" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/status_bar"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <EditText
+            android:id="@+id/edit_text"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/button_send"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="SEND" />
+
+        <TextView
+            android:id="@+id/tv_receive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/fab_size"
+        android:layout_alignTop="@+id/fab_button"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/button_pause"
+            android:layout_width="110dp"
+            android:layout_height="50dp"
+            android:text="@string/button_pause"
+            android:textColor="@color/white"
+            android:visibility="invisible"
+            tools:ignore="ButtonStyle" />
+
+        <Button
+            android:id="@+id/button_stop"
+            android:layout_width="110dp"
+            android:layout_height="50dp"
+            android:text="@string/button_stop"
+            android:textColor="@color/white"
+            android:visibility="invisible"
+            tools:ignore="ButtonStyle" />
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/fab_button"
+        android:layout_width="@dimen/fab_size"
+        android:layout_height="@dimen/fab_size"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/fab_ripple"
+        android:contentDescription="@string/string_fab"
+        android:src="@mipmap/ic_play"
+        android:stateListAnimator="@anim/anim_fab" />
+
+</RelativeLayout>

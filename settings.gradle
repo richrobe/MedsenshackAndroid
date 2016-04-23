@@ -1,1 +1,2 @@
-include ':app'
+include ':app', ':empalink-2.0', ':sensorlib'
+include ':plotview'

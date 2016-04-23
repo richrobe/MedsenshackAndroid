@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#D32F2F</color>
+    <color name="colorPrimaryDark">#B71C1C</color>
+    <color name="colorAccent">#FFA000</color>
+    <color name="colorAccentDark">#E65100</color>
+    <color name="grey_300">#E0E0E0</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- Pause/Stop button colors -->
+    <color name="button_pause_color">#ffc107</color>
+    <color name="button_pause_color_pressed">#ffa000</color>
+    <color name="button_stop_color">#e51c23</color>
+    <color name="button_stop_color_pressed">#d01716</color>
+
+
+    <!-- Status Bar colors -->
+    <color name="status_bar_disconnected">#F44336</color>
+    <color name="status_bar_connecting">#FF9800</color>
+    <color name="status_bar_connected">#4CAF50</color>
+    <color name="status_bar_simulating">#03A9F4</color>
+
 </resources>

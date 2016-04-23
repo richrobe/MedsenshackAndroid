@@ -4,6 +4,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MedsenshackAndroid.iml" filepath="$PROJECT_DIR$/MedsenshackAndroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/empalink-2.0/empalink-2.0.iml" filepath="$PROJECT_DIR$/empalink-2.0/empalink-2.0.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plotview/plotview.iml" filepath="$PROJECT_DIR$/plotview/plotview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sensorlib/sensorlib.iml" filepath="$PROJECT_DIR$/sensorlib/sensorlib.iml" />
     </modules>
   </component>
 </project>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="StatusBar">
+        <attr name="status" format="enum">
+            <enum name="disconnected" value="0" />
+            <enum name="connecting" value="1" />
+            <enum name="connected" value="2" />
+            <enum name="simulating" value="3" />
+        </attr>
+    </declare-styleable>
+
+
+</resources>
