@@ -1,4 +1,4 @@
-package de.medsenshack;
+package de.medsenshack.activity;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +9,10 @@ import android.widget.TextView;
 
 import de.fau.lme.sensorlib.sensors.BleEcgSensor;
 import de.lme.plotview.Plot;
+import de.lme.plotview.PlotView;
+import de.lme.plotview.SamplingPlot;
+import de.medsenshack.R;
+import de.medsenshack.StreamingActivity;
 
 public class SimbleeActivity extends StreamingActivity {
 
@@ -17,6 +21,9 @@ public class SimbleeActivity extends StreamingActivity {
     private TextView mReceiveTextView;
     private Button mSendButton;
     private EditText mEditText;
+    private PlotView mLiveAccPlotView;
+    private static Plot mLiveAccPlot;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +42,24 @@ public class SimbleeActivity extends StreamingActivity {
         mSendButton.setOnClickListener(this);
         mSendButton.setEnabled(false);
         mEditText = (EditText) findViewById(R.id.edit_text);
+
+        mLiveAccPlotView = (PlotView) findViewById(R.id.pv_live_acc);
+
+        if (mLiveAccPlot == null) {
+            int accentColor = getResources().getColor(R.color.colorAccent);
+            mLiveAccPlot = new SamplingPlot("", Plot.generatePlotPaint(5f, 255,
+                    ((accentColor >> 16) & 0xFF), ((accentColor >> 8) & 0xFF), (accentColor & 0xFF)),
+                    Plot.PlotStyle.LINE, 250000);
+            //((SamplingPlot) mLiveAccPlot).setViewport(mSamplingRate, 1);
+            //mLiveAccPlot.hideAxis(true);
+        } else {
+            mLiveAccPlot.clear();
+            mLiveAccPlotView.requestRedraw(false);
+        }
+        mLiveAccPlotView.setVisibility(View.VISIBLE);
+        mLiveAccPlotView.attachPlot(mLiveAccPlot);
+        mLiveAccPlotView.setMaxRedrawRate(40);
+
 
         mFABToggle = false;
         mPauseButtonPressed = false;

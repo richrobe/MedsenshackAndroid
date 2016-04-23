@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/grey_300"
-    tools:context=".SimbleeActivity">
+    tools:context=".activity.SimbleeActivity">
 
     <de.medsenshack.StatusBar xmlns:status_bar="http://schemas.android.com/apk/res-auto"
         android:id="@+id/status_bar"
@@ -34,6 +34,26 @@
             android:id="@+id/tv_receive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/cv_live_acc"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_weight="30"
+            card_view:cardCornerRadius="2dp"
+            card_view:cardElevation="5dp">
+
+            <de.fau.lme.plotview.PlotView
+                android:id="@+id/pv_live_acc"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </android.support.v7.widget.CardView>
     </LinearLayout>
 
 
