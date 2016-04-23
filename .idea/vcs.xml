@@ -2,8 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/empalink-2.0" vcs="svn" />
-    <mapping directory="$PROJECT_DIR$/plotview" vcs="svn" />
-    <mapping directory="$PROJECT_DIR$/sensorlib" vcs="svn" />
   </component>
 </project>
