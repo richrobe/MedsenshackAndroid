@@ -3,12 +3,9 @@ package de.medsenshack;
 import android.app.Service;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Binder;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
@@ -18,10 +15,19 @@ import java.io.Serializable;
 import de.fau.lme.sensorlib.DsSensorManager;
 import de.fau.lme.sensorlib.SensorDataProcessor;
 import de.fau.lme.sensorlib.dataframe.SensorDataFrame;
+import de.fau.lme.sensorlib.dataframe.SimbleeMedhackAccDataFrame;
+import de.fau.lme.sensorlib.dataframe.SimbleeMedhackDataFrame;
+import de.fau.lme.sensorlib.dataframe.SimbleeMedhackEcgDataFrame;
+import de.fau.lme.sensorlib.dataframe.SimbleeMedhackGalvDataFrame;
+import de.fau.lme.sensorlib.dataframe.SimbleeMedhackGyroDataFrame;
 import de.fau.lme.sensorlib.sensors.BleEcgSensor;
 import de.fau.lme.sensorlib.sensors.DsSensor;
 import de.fau.lme.sensorlib.sensors.SimbleeEcgSensor;
-import de.lme.plotview.Plot;
+import de.fau.lme.plotview.Plot;
+import de.medsenshack.data.storage.AccDataWriter;
+import de.medsenshack.data.storage.EcgDataWriter;
+import de.medsenshack.data.storage.GalvDataWriter;
+import de.medsenshack.data.storage.GyroDataWriter;
 
 
 /**
@@ -55,6 +61,10 @@ public class BleService extends Service implements SignalNotifier {
     private double mSamplingRate;
     private Class mClass;
     private long mStartTime;
+    private AccDataWriter accWriter;
+    private EcgDataWriter ecgWriter;
+    private GalvDataWriter galvWriter;
+    private GyroDataWriter gyroWriter;
 
     //////////// NEW ECG LIB FEATURES ////////
     //public DailyHeartDataProcessor mProcessor;
@@ -64,8 +74,8 @@ public class BleService extends Service implements SignalNotifier {
     private SensorDataProcessor mSensorDataProcessor = new SensorDataProcessor() {
         @Override
         public void onNewData(SensorDataFrame data) {
-            if (data instanceof SimbleeEcgSensor.SimbleeDataFrame) {
-                onSimbleeEvent((SimbleeEcgSensor.SimbleeDataFrame) data);
+            if (data instanceof SimbleeMedhackDataFrame) {
+                onSimbleeEvent((SimbleeMedhackDataFrame) data);
             }
         }
 
@@ -108,6 +118,14 @@ public class BleService extends Service implements SignalNotifier {
             //mPants = new PanTompkins((int) mSamplingRate);
             // Set start time
             mStartTime = System.currentTimeMillis();
+            accWriter = new AccDataWriter("acc");
+            ecgWriter = new EcgDataWriter("ecg");
+            galvWriter = new GalvDataWriter("galv");
+            gyroWriter = new GyroDataWriter("gyro");
+            accWriter.prepareWriter(10);
+            ecgWriter.prepareWriter(250);
+            galvWriter.prepareWriter(10);
+            gyroWriter.prepareWriter(10);
             mDailyHeartHandler.onStartStreaming();
         }
 
@@ -115,6 +133,10 @@ public class BleService extends Service implements SignalNotifier {
         public void onStopStreaming(DsSensor sensor) {
             Log.d(TAG, "onStopStreaming");
             sensor.disconnect();
+            accWriter.completeWriter();
+            ecgWriter.completeWriter();
+            galvWriter.completeWriter();
+            gyroWriter.completeWriter();
             mDailyHeartHandler.onStopStreaming();
         }
 
@@ -219,19 +241,17 @@ public class BleService extends Service implements SignalNotifier {
         Log.d(TAG, "onDestroy");
     }
 
-    private void onSimbleeEvent(SimbleeEcgSensor.SimbleeDataFrame data) {
-        mDailyHeartHandler.onDataReceived(new BleEcgSensor.BleEcgDataFrame(data.ecgRaw, data.timeStamp));
-    }
-
-    /**
-     * Handles all new incoming live and simulation data.
-     *
-     * @param data New data from a BLE_ECG device or from the Simulator
-     */
-    private void onBleEcgDataReceivedEvent(BleEcgSensor.BleEcgDataFrame data) {
-
-        // send the raw data to the UI for plotting
+    private void onSimbleeEvent(SimbleeMedhackDataFrame data) {
         mDailyHeartHandler.onDataReceived(data);
+        if(data instanceof SimbleeMedhackAccDataFrame){
+            accWriter.writeData(data);
+        } else if (data instanceof SimbleeMedhackEcgDataFrame) {
+            ecgWriter.writeData(data);
+        } else if (data instanceof SimbleeMedhackGalvDataFrame) {
+            galvWriter.writeData(data);
+        } else if (data instanceof SimbleeMedhackGyroDataFrame){
+            gyroWriter.writeData(data);
+        }
     }
 
     public void setDailyHeartHandler(DailyHeartHandler handler) {

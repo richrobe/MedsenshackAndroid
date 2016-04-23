@@ -105,7 +105,7 @@ public abstract class DataWriter {
                     }
                 }
                 // create files
-                mECGFileHandler = new File(path + "/" + mName + currentTimeString + ".csv");
+                mECGFileHandler = new File(path + "/" + mName + "_" + currentTimeString + ".csv");
                 mECGFileCreated = mECGFileHandler.createNewFile();
                 if (!mECGFileCreated) {
                     mECGFileCreated = mECGFileHandler.exists();
