@@ -17,35 +17,6 @@ import de.fau.lme.plotview.Plot;
  */
 public interface DailyHeartHandler {
 
-    /**
-     * ANDROID WEAR
-     * <p/>
-     * String path for sending a message from Handheld to Wear when the ECG device
-     * started streaming to the handheld.
-     */
-    String PATH_START_STREAMING = "/handheld/start-streaming";
-
-    /**
-     * ANDROID WEAR
-     * <p/>
-     * String path for sending a message from Handheld to Wear when a heart beat was detected.
-     */
-    String PATH_HEART_BEAT = "/handheld/heart-beat";
-    /**
-     * ANDROID WEAR
-     * <p/>
-     * String path for sending a message from Handheld to Wear when new heart rate
-     * is available.
-     */
-    String PATH_HEART_RATE = "/handheld/heart-rate";
-    /**
-     * ANDROID WEAR
-     * <p/>
-     * String path for sending a message from Handheld to Wear with average heart date
-     * (at the end of measurement).
-     */
-    String PATH_HEART_RATE_AVG = "/handheld/heart-avg";
-
     void onScanResult(boolean sensorFound);
 
     /**

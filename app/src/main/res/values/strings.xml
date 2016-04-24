@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Medsenshack</string>
+    <string name="app_name">iRheumaN</string>
     <string name="action_settings">Settings</string>
 
     <!-- Activity names -->
@@ -16,6 +16,11 @@
     <string name="title_activity_daily_simulate_result">DailySimulateResult</string>
     <string name="title_activity_daily_hrv">DailyHRVActivity</string>
     <string name="title_activity_settings">Settings</string>
+
+    <string name="toggle_1">Sitting</string>
+    <string name="toggle_2">Walking</string>
+    <string name="toggle_3">Stairs</string>
+    <string name="toggle_4">Running</string>
 
     <!-- Navdrawer items -->
     <string name="navdrawer_item_main_menu">Main Menu</string>
@@ -38,7 +43,8 @@
     <string name="title_heart">Heart</string>
     <string name="title_sport">Sport</string>
     <string name="title_overview">Overview</string>
-    <string name="title_details">Details</string>
+    <string name="title_accgyr">Acc/Gyr</string>
+    <string name="title_ecggsr">ECG/GSR</string>
     <string name="title_before">Before</string>
     <string name="title_after">After</string>
     <string name="title_hrv">HRV</string>

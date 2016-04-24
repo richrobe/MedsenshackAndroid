@@ -10,8 +10,8 @@
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://C:/Android/android-sdk-windows/extras/android/m2repository/com/android/support/support-v4/23.0.0/support-v4-23.0.0-sources.jar!/" />
       <root url="jar://$PROJECT_DIR$/../../android-sdk/extras/android/m2repository/com/android/support/support-v4/23.0.0/support-v4-23.0.0-sources.jar!/" />
+      <root url="jar://C:/Android/android-sdk-windows/extras/android/m2repository/com/android/support/support-v4/23.0.0/support-v4-23.0.0-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

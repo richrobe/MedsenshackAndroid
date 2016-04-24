@@ -7,8 +7,8 @@
         android:id="@+id/tv_status"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="4pt"
         android:gravity="center"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:textSize="4pt" />
 
 </RelativeLayout>

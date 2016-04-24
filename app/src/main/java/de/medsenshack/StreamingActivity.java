@@ -405,12 +405,18 @@ public abstract class StreamingActivity extends Activity implements View.OnClick
                 == PackageManager.PERMISSION_GRANTED;
         boolean fineGranted = ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED;
-        return coarseGranted || fineGranted;
+        boolean storageGranted = ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED;
+        return coarseGranted || fineGranted || storageGranted;
     }
 
     private void requestPermission() {
         ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                },
                 Constants.REQUEST_ACCESS_LOCATION);
     }
 

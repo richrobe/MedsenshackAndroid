@@ -2,7 +2,7 @@ package de.medsenshack;
 
 import de.fau.lme.sensorlib.SensorDataProcessor;
 import de.fau.lme.sensorlib.sensors.DsSensor;
-import de.lme.plotview.Plot;
+import de.fau.lme.plotview.Plot;
 
 /**
  * Created by Robert on 16.01.16.

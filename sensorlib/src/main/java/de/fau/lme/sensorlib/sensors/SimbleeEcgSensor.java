@@ -15,7 +15,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.Locale;
@@ -144,8 +143,9 @@ public class SimbleeEcgSensor extends DsSensor {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 if (mName.equals(gatt.getDevice().getName()) && UUID_RECEIVE.equals(characteristic.getUuid())) {
                     byte[] values = characteristic.getValue();
-                    Log.d(TAG, "values: " + Arrays.toString(values));
-                    sendNewData(new SimbleeDataFrame(values[0], timeStamp++));
+                    for (byte value : values) {
+                        sendNewData(new SimbleeDataFrame(value, timeStamp++));
+                    }
                 }
             }
         }
@@ -158,8 +158,10 @@ public class SimbleeEcgSensor extends DsSensor {
 
             if (gatt.getDevice().getName().equals(mName)) {
                 byte[] values = characteristic.getValue();
-                Log.d(TAG, "values: " + Arrays.toString(values));
-                sendNewData(new SimbleeDataFrame(values[0], timeStamp++));
+                //Log.d(TAG, "values: " + Arrays.toString(values));
+                for (byte value : values) {
+                    sendNewData(new SimbleeDataFrame(value, timeStamp++));
+                }
             }
         }
     };

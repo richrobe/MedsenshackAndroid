@@ -8,29 +8,14 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
-import android.os.Environment;
-import android.os.SystemClock;
 import android.util.Log;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.EnumSet;
-import java.util.Locale;
 import java.util.UUID;
 
 import de.fau.lme.sensorlib.DsSensorManager;
 import de.fau.lme.sensorlib.SensorDataProcessor;
-import de.fau.lme.sensorlib.dataframe.AccelDataFrame;
-import de.fau.lme.sensorlib.dataframe.EcgDataFrame;
-import de.fau.lme.sensorlib.dataframe.GalvanicSkinResponseDataFrame;
-import de.fau.lme.sensorlib.dataframe.GyroDataFrame;
-import de.fau.lme.sensorlib.dataframe.SensorDataFrame;
 import de.fau.lme.sensorlib.dataframe.SimbleeMedhackAccDataFrame;
-import de.fau.lme.sensorlib.dataframe.SimbleeMedhackEcgDataFrame;
 
 /**
  * Created by Robert on 03.01.16.
@@ -58,7 +43,6 @@ public class SimbleeMedhackSensor extends DsSensor {
 
 
     private Context mContext;
-    //private BleEcgDataWriter mWriter;
 
     private BluetoothGatt mBluetoothGatt;
     private BluetoothGattService mBluetoothGattService;
@@ -150,13 +134,12 @@ public class SimbleeMedhackSensor extends DsSensor {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 if (mName.equals(gatt.getDevice().getName()) && UUID_RECEIVE.equals(characteristic.getUuid())) {
                     byte[] values = characteristic.getValue();
-                    Log.d(TAG, "values: " + Arrays.toString(values));
-                    switch (values[0]){
+                    /*switch (values[0]) {
                         case 0x01: {
                             int accSamplingRate = 10;
                             long currentTime = System.currentTimeMillis();
-                            long prevTime = currentTime - (1000/accSamplingRate);
-                            long prevPrevTime = currentTime - (2*(1000/accSamplingRate));
+                            long prevTime = currentTime - (1000 / accSamplingRate);
+                            long prevPrevTime = currentTime - (2 * (1000 / accSamplingRate));
 
                             //sendNewData(new SimbleeMedhackAccDataFrame(values[0], timeStamp++));
                             break;
@@ -176,9 +159,10 @@ public class SimbleeMedhackSensor extends DsSensor {
                         default: {
 
                         }
+                    }*/
+                    for (byte value : values) {
+                        sendNewData(new SimbleeMedhackAccDataFrame(value, value / 2, -value, timeStamp++));
                     }
-
-                    //sendNewData(new SimbleeDataFrame(values[0], timeStamp++));
                 }
             }
         }
@@ -191,8 +175,8 @@ public class SimbleeMedhackSensor extends DsSensor {
 
             if (gatt.getDevice().getName().equals(mName)) {
                 byte[] values = characteristic.getValue();
-                Log.d(TAG, "values: " + Arrays.toString(values));
-                switch (values[0]){
+                //Log.d(TAG, "values: " + Arrays.toString(values));
+                /*switch (values[0]) {
                     case 0x00: {
 
                         break;
@@ -200,8 +184,10 @@ public class SimbleeMedhackSensor extends DsSensor {
                     default: {
 
                     }
+                }*/
+                for (byte value : values) {
+                    sendNewData(new SimbleeMedhackAccDataFrame(value, value / 2, -value, timeStamp++));
                 }
-                //sendNewData(new SimbleeDataFrame(values[0], timeStamp++));
             }
         }
     };
@@ -267,7 +253,7 @@ public class SimbleeMedhackSensor extends DsSensor {
     public void stopStreaming() {
         Log.d(TAG, "stop streaming");
         //if (mWriter != null) {
-            //mWriter.completeWriter();
+        //mWriter.completeWriter();
         //}
         mBluetoothGatt.disconnect();
         sendStopStreaming();

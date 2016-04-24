@@ -30,8 +30,7 @@ public interface Constants {
     // DESCRIPTORS
     UUID GATT_CLIENT_CFG_DESC = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
     // DEVICE NAME
-    String POSTAGE_ECG = "POSTAGE STAMP ECG";
-    String SIMBLEE = "Simblee";
+    String SIMBLEE = "SimbleeMed";
 
 
     ////// HANDLER MESSAGES //////

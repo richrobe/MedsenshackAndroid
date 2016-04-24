@@ -25,6 +25,7 @@ import de.fau.lme.sensorlib.sensors.InternalSensor;
 import de.fau.lme.sensorlib.sensors.PolarHrSensor;
 import de.fau.lme.sensorlib.sensors.ShimmerSensor;
 import de.fau.lme.sensorlib.sensors.SimbleeEcgSensor;
+import de.fau.lme.sensorlib.sensors.SimbleeMedhackSensor;
 import de.fau.lme.sensorlib.sensors.SmartWatch;
 
 public class DsSensorManager {
@@ -59,8 +60,10 @@ public class DsSensorManager {
             return BleEcgSensor.class;
         } else if (deviceName.contains("BleEcgSimulator")) {
             return BleEcgSimulatedSensor.class;
-        } else if (deviceName.contains("Simblee")) {
+        } else if (deviceName.equals("Simblee")) {
             return SimbleeEcgSensor.class;
+        } else if (deviceName.equals("SimbleeMed")) {
+            return SimbleeMedhackSensor.class;
         }
 
         return null;
@@ -100,6 +103,8 @@ public class DsSensorManager {
             sensor = new BleEcgSensor(context, deviceName, device.getAddress(), dataHandler);
         } else if (sensorClass == SimbleeEcgSensor.class) {
             sensor = new SimbleeEcgSensor(context, deviceName, device.getAddress(), dataHandler);
+        } else if (sensorClass == SimbleeMedhackSensor.class) {
+            sensor = new SimbleeMedhackSensor(context, deviceName, device.getAddress(), dataHandler);
         }
 
         if (sensor != null)

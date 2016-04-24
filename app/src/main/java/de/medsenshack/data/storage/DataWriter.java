@@ -93,12 +93,12 @@ public abstract class DataWriter {
         if (mStorageWritable) {
             try {
                 // create directory
-                path = new File(root, "Data");
+                path = new File(root, "MedHackathonData");
                 mECGFileCreated = path.mkdir();
                 if (!mECGFileCreated) {
                     mECGFileCreated = path.exists();
                     if (!mECGFileCreated) {
-                        Log.e(TAG, "File could not be created!");
+                        Log.e(TAG, "File could not be created! " + path);
                         return;
                     } else {
                         Log.i(TAG, "Working directory is " + path.getAbsolutePath());

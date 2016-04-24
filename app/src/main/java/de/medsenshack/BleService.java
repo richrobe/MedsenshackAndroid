@@ -4,13 +4,10 @@ import android.app.Service;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
-
-import java.io.Serializable;
 
 import de.fau.lme.sensorlib.DsSensorManager;
 import de.fau.lme.sensorlib.SensorDataProcessor;
@@ -20,7 +17,6 @@ import de.fau.lme.sensorlib.dataframe.SimbleeMedhackDataFrame;
 import de.fau.lme.sensorlib.dataframe.SimbleeMedhackEcgDataFrame;
 import de.fau.lme.sensorlib.dataframe.SimbleeMedhackGalvDataFrame;
 import de.fau.lme.sensorlib.dataframe.SimbleeMedhackGyroDataFrame;
-import de.fau.lme.sensorlib.sensors.BleEcgSensor;
 import de.fau.lme.sensorlib.sensors.DsSensor;
 import de.fau.lme.sensorlib.sensors.SimbleeEcgSensor;
 import de.fau.lme.plotview.Plot;
@@ -59,7 +55,6 @@ public class BleService extends Service implements SignalNotifier {
     private IBinder mBinder = new BleServiceBinder();
     private DailyHeartHandler mDailyHeartHandler;
     private double mSamplingRate;
-    private Class mClass;
     private long mStartTime;
     private AccDataWriter accWriter;
     private EcgDataWriter ecgWriter;
@@ -70,7 +65,7 @@ public class BleService extends Service implements SignalNotifier {
     //public DailyHeartDataProcessor mProcessor;
     //////////////////////////////////////////
 
-    private DsSensor mEcgSensor;
+    private DsSensor mSimbleeSensor;
     private SensorDataProcessor mSensorDataProcessor = new SensorDataProcessor() {
         @Override
         public void onNewData(SensorDataFrame data) {
@@ -105,10 +100,10 @@ public class BleService extends Service implements SignalNotifier {
         public void onDisconnected(DsSensor sensor) {
             Log.d(TAG, "onDisconnected");
             mDailyHeartHandler.onSensorDisconnected();
-            if (((SimbleeEcgSensor) mEcgSensor).connectionLost) {
+            if (((SimbleeEcgSensor) mSimbleeSensor).connectionLost) {
                 mDailyHeartHandler.onSensorConnectionLost();
             }
-            mEcgSensor = null;
+            mSimbleeSensor = null;
         }
 
         @Override
@@ -167,17 +162,13 @@ public class BleService extends Service implements SignalNotifier {
         public void onScanResult(int callbackType, ScanResult result) {
             Log.i(TAG, "New BLE device: " + result.getDevice().getName() + "@" + result.getRssi());
             if (result.getDevice() != null && Constants.SIMBLEE.equals(result.getDevice().getName())) {
-                mEcgSensor = DsSensorManager.createSupportedSensor(result.getDevice(), mSensorDataProcessor, BleService.this);
-                if (mEcgSensor != null) {
-                    mEcgSensor.requestSamplingRateChange(250);
+                mSimbleeSensor = DsSensorManager.createSupportedSensor(result.getDevice(), mSensorDataProcessor, BleService.this);
+                if (mSimbleeSensor != null) {
+                    mSimbleeSensor.requestSamplingRateChange(250);
                 }
             }
         }
     };
-
-    public void sendSimblee(String msg) {
-        ((SimbleeEcgSensor) mEcgSensor).send(msg.getBytes());
-    }
 
 
     public void startSimblee() {
@@ -186,7 +177,7 @@ public class BleService extends Service implements SignalNotifier {
             @Override
             public void run() {
                 DsSensorManager.cancelBleSearch(mScanCallback);
-                if (mEcgSensor == null) {
+                if (mSimbleeSensor == null) {
                     mDailyHeartHandler.onScanResult(false);
                 }
             }
@@ -194,10 +185,10 @@ public class BleService extends Service implements SignalNotifier {
     }
 
     public void stopBle() {
-        if (mEcgSensor == null) {
+        if (mSimbleeSensor == null) {
             return;
         }
-        mEcgSensor.stopStreaming();
+        mSimbleeSensor.stopStreaming();
         //mPants = null;
     }
 
@@ -205,15 +196,6 @@ public class BleService extends Service implements SignalNotifier {
     @Override
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "Service bond!");
-        // IntentFilter and BroadcastReceiver for starting and stopping the service
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Constants.ACTION_STOP);
-        intentFilter.addAction(Constants.ACTION_START);
-        // Extract the name of the Activity that has started the service for the NotificationManager
-        Serializable aClass = intent.getSerializableExtra(Constants.EXTRA_ACTIVITY_NAME);
-        if (aClass instanceof Class<?>) {
-            mClass = (Class) aClass;
-        }
         //mDataProcessor = new DataProcessor(mServiceHandler);
 
         return mBinder;
