@@ -21,8 +21,8 @@ public class GyroDataWriter extends DataWriter {
     @Override
     public void doWriteData(SensorDataFrame data) throws IOException {
         if(data instanceof SimbleeMedhackGyroDataFrame) {
-            SimbleeMedhackGyroDataFrame accData = (SimbleeMedhackGyroDataFrame) data;
-            mBufferedWriter.write(String.valueOf(accData.getTimestamp())+mDelimiter+String.valueOf(accData.getGyroX())+mDelimiter+String.valueOf(accData.getGyroY())+mDelimiter+String.valueOf(accData.getGyroZ()));
+            SimbleeMedhackGyroDataFrame gyroData = (SimbleeMedhackGyroDataFrame) data;
+            mBufferedWriter.write(String.valueOf(gyroData.getTimestamp()) + mDelimiter + String.valueOf(gyroData.getSensorPacketTimestamp()) + mDelimiter + String.valueOf(gyroData.getGyroX()) + mDelimiter + String.valueOf(gyroData.getGyroY()) + mDelimiter + String.valueOf(gyroData.getGyroZ()));
         }
     }
 }

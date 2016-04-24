@@ -11,16 +11,16 @@ public class SimbleeMedhackAccDataFrame extends SimbleeMedhackDataFrame implemen
     public char label;
     public long timeStamp;
 
-    public SimbleeMedhackAccDataFrame(double accX, double accY, double accZ, long timestamp) {
-        super(null, timestamp);
+    public SimbleeMedhackAccDataFrame(double accX, double accY, double accZ, long timestamp, long sensorPacketTimestamp) {
+        super(null, timestamp, sensorPacketTimestamp);
         this.accX = accX;
         this.accY = accY;
         this.accZ = accZ;
         this.timeStamp = timestamp;
     }
 
-    public SimbleeMedhackAccDataFrame(double ecg, long timestamp, char label) {
-        super(null, timestamp);
+    public SimbleeMedhackAccDataFrame(double ecg, long timestamp, char label, long sensorPacketTimestamp) {
+        super(null, timestamp, sensorPacketTimestamp);
         this.accX = accX;
         this.accY = accY;
         this.accZ = accZ;

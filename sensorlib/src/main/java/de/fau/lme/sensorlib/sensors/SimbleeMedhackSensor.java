@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.util.Log;
 
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.UUID;
 
@@ -17,6 +18,7 @@ import de.fau.lme.sensorlib.DsSensorManager;
 import de.fau.lme.sensorlib.SensorDataProcessor;
 import de.fau.lme.sensorlib.dataframe.SimbleeMedhackAccDataFrame;
 import de.fau.lme.sensorlib.dataframe.SimbleeMedhackEcgDataFrame;
+import de.fau.lme.sensorlib.dataframe.SimbleeMedhackGalvDataFrame;
 
 /**
  * Created by Robert on 03.01.16.
@@ -45,6 +47,7 @@ public class SimbleeMedhackSensor extends DsSensor {
 
     public static final int ACC_SAMPLING_RATE = 10;
     public static final int ECG_SAMPLING_RATE = 250;
+    public static final int EDA_SAMPLING_RATE = 10;
 
     private Context mContext;
 
@@ -158,28 +161,34 @@ public class SimbleeMedhackSensor extends DsSensor {
                 int timestamp = (tmp1 << 8) | tmp2;
 
                 int[] data = new int[(values.length - 2) / 2];
-                //String vals = "id: " + id + ", timestamp: " + timestamp;
-                //vals += ", vals: ";
+                String vals = "id: " + id + ", timestamp: " + timestamp;
+                vals += ", vals: ";
                 int cou = 0;
                 for (int i = 2; i < values.length - 1; i += 2) {
                     tmp1 = ((int) values[i + 1]) & 0b000000011111111;
                     tmp2 = ((int) values[i]) & 0b0000000011111111;
-                    //vals += (((tmp1 << 8) | tmp2) + ", ");
+                    vals += (((tmp1 << 8) | tmp2) + ", ");
                     data[cou++] = ((tmp1 << 8) | tmp2);
                 }
 
-                //Log.d(TAG, "bytes: " + Arrays.toString(values));
-                //Log.d(TAG, vals);
+                Log.d(TAG, "bytes: " + Arrays.toString(values));
+                Log.d(TAG, vals);
                 switch (id) {
                     case 1: {
                         for (int i = 0; i < data.length / 3; i++) {
-                            sendNewData(new SimbleeMedhackAccDataFrame(data[i * 3], data[i * 3 + 1], data[i * 3 + 2], time - (data.length / 3 - 1 - i) * (1000 / ACC_SAMPLING_RATE)));
+                            sendNewData(new SimbleeMedhackAccDataFrame(data[i * 3], data[i * 3 + 1], data[i * 3 + 2], time - (data.length / 3 - 1 - i) * (1000 / ACC_SAMPLING_RATE), timestamp));
+                        }
+                        break;
+                    }
+                    case 2: {
+                        for (int i = 0; i < data.length; i++) {
+                            sendNewData(new SimbleeMedhackGalvDataFrame(data[i], time - (data.length - 1 - i) * (1000 / EDA_SAMPLING_RATE), timestamp));
                         }
                         break;
                     }
                     case 3: {
                         for (int i = 0; i < data.length; i++) {
-                            sendNewData(new SimbleeMedhackEcgDataFrame(data[i], time - (data.length - 1 - i) * (1000 / ECG_SAMPLING_RATE)));
+                            sendNewData(new SimbleeMedhackEcgDataFrame(data[i], time - (data.length - 1 - i) * (1000 / ECG_SAMPLING_RATE), timestamp));
                         }
                         break;
                     }

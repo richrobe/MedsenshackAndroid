@@ -281,7 +281,12 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
 
     @Override
     public void onSegmentationFinished() {
-
+        if (BleService.mPants != null) {
+            // only set values if Pants is done with learning
+            if (!PanTompkins.learning) {
+                mGeneralFragment.update();
+            }
+        }
     }
 
     @Override
@@ -292,9 +297,6 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
         }
         if (mEcgGsrFragment != null && (data instanceof SimbleeMedhackEcgDataFrame || data instanceof SimbleeMedhackGalvDataFrame)) {
             mEcgGsrFragment.update(data);
-        }
-        if (mGeneralFragment != null) {
-            mGeneralFragment.update();
         }
     }
 
@@ -485,10 +487,12 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
          * Updates all Views of this {@link android.app.Fragment}.
          */
         public void update() {
-
             // set min and max heart rate
             if (!PanTompkins.learning) {
                 mHeartRateTextView.setText(BleService.mPants.heartRateStats.formatValue());
+                if (!BleService.mEnergyLinkedList.isEmpty()) {
+                    mActivityTextView.setText(new DecimalFormat("#00.00").format(BleService.mEnergyLinkedList.getLast()));
+                }
             }
         }
 
@@ -639,7 +643,7 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
             ((SamplingPlot) mEcgPlot).setViewport(250, 10);
             mEcgPlot.hideAxis(true);
 
-            color = getResources().getColor(R.color.colorAccent);
+            color = getResources().getColor(R.color.black);
             mGsrPlot = new SamplingPlot("", Plot.generatePlotPaint(5f, 255,
                     ((color >> 16) & 0xFF), ((color >> 8) & 0xFF), (color & 0xFF)),
                     Plot.PlotStyle.LINE, 250000);

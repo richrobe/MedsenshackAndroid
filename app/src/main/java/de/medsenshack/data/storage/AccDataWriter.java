@@ -23,7 +23,7 @@ public class AccDataWriter extends DataWriter {
     public void doWriteData(SensorDataFrame data) throws IOException {
         if(data instanceof SimbleeMedhackAccDataFrame) {
             SimbleeMedhackAccDataFrame accData = (SimbleeMedhackAccDataFrame) data;
-            mBufferedWriter.write(String.valueOf(accData.getTimestamp())+mDelimiter+String.valueOf(accData.getAccelX())+mDelimiter+String.valueOf(accData.getAccelY())+mDelimiter+String.valueOf(accData.getAccelZ()));
+            mBufferedWriter.write(String.valueOf(accData.getTimestamp()) + mDelimiter + String.valueOf(accData.getSensorPacketTimestamp()) + mDelimiter + String.valueOf(accData.getAccelX()) + mDelimiter + String.valueOf(accData.getAccelY()) + mDelimiter + String.valueOf(accData.getAccelZ()));
         }
     }
 }

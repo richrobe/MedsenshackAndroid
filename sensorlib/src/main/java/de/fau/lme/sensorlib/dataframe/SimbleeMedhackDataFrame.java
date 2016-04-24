@@ -12,7 +12,15 @@ public  abstract class SimbleeMedhackDataFrame extends SensorDataFrame {
      * @param fromSensor the sensor from which this data frame originated.
      * @param timestamp  the timestamp in milliseconds when this data frame was generated on the sensor.
      */
-    public SimbleeMedhackDataFrame(DsSensor fromSensor, double timestamp) {
+
+    private double sensorPacketTimestamp;
+
+    public SimbleeMedhackDataFrame(DsSensor fromSensor, double timestamp, double sensorPacketTimestamp) {
         super(fromSensor, timestamp);
+        this.sensorPacketTimestamp = sensorPacketTimestamp;
+    }
+
+    public double getSensorPacketTimestamp() {
+        return sensorPacketTimestamp;
     }
 }

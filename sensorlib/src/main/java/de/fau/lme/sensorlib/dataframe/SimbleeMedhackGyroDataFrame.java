@@ -11,16 +11,16 @@ public class SimbleeMedhackGyroDataFrame extends SimbleeMedhackDataFrame impleme
     public char label;
     public long timeStamp;
 
-    public SimbleeMedhackGyroDataFrame(double gyroX, double gyroY, double gyroZ, long timestamp) {
-        super(null, timestamp);
+    public SimbleeMedhackGyroDataFrame(double gyroX, double gyroY, double gyroZ, long timestamp, long sensorPacketTimestamp) {
+        super(null, timestamp, sensorPacketTimestamp);
         this.gyroX = gyroX;
         this.gyroY = gyroY;
         this.gyroZ = gyroZ;
         this.timeStamp = timestamp;
     }
 
-    public SimbleeMedhackGyroDataFrame(double gyroX, double gyroY, double gyroZ, long timestamp, char label) {
-        super(null, timestamp);
+    public SimbleeMedhackGyroDataFrame(double gyroX, double gyroY, double gyroZ, long timestamp, char label, long sensorPacketTimestamp) {
+        super(null, timestamp, sensorPacketTimestamp);
         this.gyroX = gyroX;
         this.gyroY = gyroY;
         this.gyroZ = gyroZ;

@@ -22,7 +22,7 @@ public class EcgDataWriter extends DataWriter {
     public void doWriteData(SensorDataFrame data) throws IOException {
         if(data instanceof SimbleeMedhackEcgDataFrame) {
             SimbleeMedhackEcgDataFrame ecgData = (SimbleeMedhackEcgDataFrame) data;
-            mBufferedWriter.write(String.valueOf(ecgData.getTimestamp())+mDelimiter+String.valueOf(ecgData.getEcgSample()));
+            mBufferedWriter.write(String.valueOf(ecgData.getTimestamp()) + mDelimiter + String.valueOf(ecgData.getSensorPacketTimestamp()) + mDelimiter + String.valueOf(ecgData.getEcgSample()));
         }
     }
 }

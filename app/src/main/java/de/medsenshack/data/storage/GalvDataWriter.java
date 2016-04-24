@@ -22,7 +22,7 @@ public class GalvDataWriter extends DataWriter{
     public void doWriteData(SensorDataFrame data) throws IOException {
         if(data instanceof SimbleeMedhackGalvDataFrame) {
             SimbleeMedhackGalvDataFrame galvData = (SimbleeMedhackGalvDataFrame) data;
-            mBufferedWriter.write(String.valueOf(galvData.getTimestamp())+mDelimiter+String.valueOf(galvData.getGalvanicSkinResponse()));
+            mBufferedWriter.write(String.valueOf(galvData.getTimestamp()) + mDelimiter + String.valueOf(galvData.getSensorPacketTimestamp()) + mDelimiter + String.valueOf(galvData.getGalvanicSkinResponse()));
         }
     }
 }

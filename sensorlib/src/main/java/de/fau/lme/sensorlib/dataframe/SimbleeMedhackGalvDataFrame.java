@@ -9,14 +9,14 @@ public class SimbleeMedhackGalvDataFrame extends SimbleeMedhackDataFrame impleme
     public char label;
     public long timeStamp;
 
-    public SimbleeMedhackGalvDataFrame(double galv, long timestamp) {
-        super(null, timestamp);
+    public SimbleeMedhackGalvDataFrame(double galv, long timestamp, long sensorPacketTimestamp) {
+        super(null, timestamp, sensorPacketTimestamp);
         this.galv = galv;
         this.timeStamp = timestamp;
     }
 
-    public SimbleeMedhackGalvDataFrame(double ecg, long timestamp, char label) {
-        super(null, timestamp);
+    public SimbleeMedhackGalvDataFrame(double ecg, long timestamp, char label, long sensorPacketTimestamp) {
+        super(null, timestamp, sensorPacketTimestamp);
         this.galv = galv;
         this.timeStamp = timestamp;
     }

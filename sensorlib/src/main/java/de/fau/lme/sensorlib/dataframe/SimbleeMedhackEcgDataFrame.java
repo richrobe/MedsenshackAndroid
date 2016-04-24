@@ -9,14 +9,14 @@ public class SimbleeMedhackEcgDataFrame extends SimbleeMedhackDataFrame implemen
     public char label;
     public long timeStamp;
 
-    public SimbleeMedhackEcgDataFrame(double ecg, long timestamp) {
-        super(null, timestamp);
+    public SimbleeMedhackEcgDataFrame(double ecg, long timestamp, long sensorPacketTimestamp) {
+        super(null, timestamp, sensorPacketTimestamp);
         this.ecgRaw = ecg;
         this.timeStamp = timestamp;
     }
 
-    public SimbleeMedhackEcgDataFrame(double ecg, long timestamp, char label) {
-        super(null, timestamp);
+    public SimbleeMedhackEcgDataFrame(double ecg, long timestamp, char label, long sensorPacketTimestamp) {
+        super(null, timestamp, sensorPacketTimestamp);
         this.ecgRaw = ecg;
         this.timeStamp = timestamp;
     }

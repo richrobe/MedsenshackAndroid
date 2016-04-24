@@ -9,6 +9,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
+import java.util.LinkedList;
+
 import de.fau.lme.plotview.Plot;
 import de.fau.lme.sensorlib.DsSensorManager;
 import de.fau.lme.sensorlib.SensorDataProcessor;
@@ -225,18 +227,39 @@ public class BleService extends Service implements SignalNotifier {
         Log.d(TAG, "onDestroy");
     }
 
+
+    private LinkedList<SimbleeMedhackAccDataFrame> mAccLinkedList = new LinkedList<>();
+    public static LinkedList<Double> mEnergyLinkedList = new LinkedList<>();
+
+    private long timeStamp = 0L;
+
+    private long mOldTimestamp;
+
     private void onSimbleeEvent(SimbleeMedhackDataFrame data) {
         if (data instanceof SimbleeMedhackAccDataFrame) {
-            Log.e(TAG, "ACC");
+            //Log.e(TAG, "ACC");
+            mAccLinkedList.add((SimbleeMedhackAccDataFrame) data);
+            long currTimestamp = System.currentTimeMillis();
+            if (mOldTimestamp == 0) {
+                mOldTimestamp = currTimestamp;
+            }
+
+            if ((currTimestamp - mOldTimestamp) >= 10 * 1000) {
+                Log.e(TAG, "new ENERGY");
+                mOldTimestamp = currTimestamp;
+                mEnergyLinkedList.add(calculateEnergy(mAccLinkedList));
+                mAccLinkedList.clear();
+            }
             accWriter.writeData(data);
         } else if (data instanceof SimbleeMedhackEcgDataFrame) {
-            Log.e(TAG, "ECG");
+            //Log.e(TAG, "ECG");
             ecgWriter.writeData(data);
             if (mPants != null) {
                 // next step of processing pipeline
-                //Log.e(TAG, "NEW pants: " + tmp.ecgRaw + ", " + tmp.timeStamp);
-                mPants.next(((SimbleeMedhackEcgDataFrame) data).ecgRaw, ((SimbleeMedhackEcgDataFrame) data).timeStamp);
-
+                //Log.e(TAG, "NEW pants: " + ((SimbleeMedhackEcgDataFrame) data).ecgRaw + ", " + ((SimbleeMedhackEcgDataFrame) data).timeStamp);
+                mPants.next(((SimbleeMedhackEcgDataFrame) data).ecgRaw, timeStamp++);
+                //Log.e(TAG, "heart rate: " + mPants.heartRateStats.formatValue());
+                //Log.e(TAG, "rr: " + mPants.rrStats.formatValue());
                 if (PanTompkins.QRS.qrsCurrent.segState == PanTompkins.QRS.SegmentationStatus.FINISHED) {
                     mDailyHeartHandler.onSegmentationFinished();
 
@@ -251,6 +274,23 @@ public class BleService extends Service implements SignalNotifier {
             gyroWriter.writeData(data);
         }
         mDailyHeartHandler.onDataReceived(data);
+    }
+
+    private static double calculateEnergy(LinkedList<SimbleeMedhackAccDataFrame> values) {
+        double meanSquareX = 0.0;
+        double meanSquareY = 0.0;
+        double meanSquareZ = 0.0;
+
+        for (int i = 0; i < values.size(); i++) {
+            meanSquareX += values.get(i).accX * values.get(i).accX;
+            meanSquareY += values.get(i).accY * values.get(i).accY;
+            meanSquareZ += values.get(i).accZ * values.get(i).accZ;
+        }
+        meanSquareX /= values.size();
+        meanSquareY /= values.size();
+        meanSquareZ /= values.size();
+
+        return Math.abs((Math.sqrt((meanSquareX + meanSquareY + meanSquareZ) / 3) - 488.0));
     }
 
     public void setDailyHeartHandler(DailyHeartHandler handler) {
