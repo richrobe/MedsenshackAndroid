@@ -14,6 +14,7 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -38,7 +39,7 @@ import de.medsenshack.data.PanTompkins;
 import de.medsenshack.data.storage.AnnotationWriter;
 
 
-public class SimbleeActivity extends StreamingActivity implements ActionBar.TabListener, CompoundButton.OnCheckedChangeListener {
+public class SimbleeActivity extends StreamingActivity implements ActionBar.TabListener, CompoundButton.OnCheckedChangeListener, Button.OnClickListener {
 
     private static final String TAG = SimbleeActivity.class.getSimpleName();
 
@@ -47,6 +48,7 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
     private ToggleButton mToggleButton2;
     private ToggleButton mToggleButton3;
     private ToggleButton mToggleButton4;
+    private ActivityClass currentActivity = ActivityClass.IDLE;
 
     private AnnotationWriter annotationWriter = null;
 
@@ -129,6 +131,10 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
         mToggleButton3 = (ToggleButton) findViewById(R.id.toggle_3);
         mToggleButton4 = (ToggleButton) findViewById(R.id.toggle_4);
         mToggleButton1.setOnCheckedChangeListener(this);
+        mToggleButton1.setOnClickListener(this);
+        mToggleButton2.setOnClickListener(this);
+        mToggleButton3.setOnClickListener(this);
+        mToggleButton4.setOnClickListener(this);
         mToggleButton2.setOnCheckedChangeListener(this);
         mToggleButton3.setOnCheckedChangeListener(this);
         mToggleButton4.setOnCheckedChangeListener(this);
@@ -252,6 +258,9 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
         super.onStartStreaming();
         annotationWriter = new AnnotationWriter("annotation");
         annotationWriter.prepareWriter();
+        if (annotationWriter != null) {
+            annotationWriter.writeData(currentActivity);
+        }
         mChronometer.setBase(SystemClock.elapsedRealtime());
         mChronometer.start();
     }
@@ -312,6 +321,46 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
             case R.id.button_pause:
                 onPauseButtonClick();
                 break;
+            case R.id.toggle_1:
+                if(currentActivity == ActivityClass.SIT){
+                    currentActivity = ActivityClass.IDLE;
+                } else {
+                    currentActivity = ActivityClass.SIT;
+                }
+                if (annotationWriter != null) {
+                    annotationWriter.writeData(currentActivity);
+                }
+                break;
+            case R.id.toggle_2:
+                if(currentActivity == ActivityClass.WALK){
+                    currentActivity = ActivityClass.IDLE;
+                } else {
+                    currentActivity = ActivityClass.WALK;
+                }
+                if (annotationWriter != null) {
+                    annotationWriter.writeData(currentActivity);
+                }
+                break;
+            case R.id.toggle_3:
+                if(currentActivity == ActivityClass.STAIRS_UP){
+                    currentActivity = ActivityClass.IDLE;
+                } else {
+                    currentActivity = ActivityClass.STAIRS_UP;
+                }
+                if (annotationWriter != null) {
+                    annotationWriter.writeData(currentActivity);
+                }
+                break;
+            case R.id.toggle_4:
+                if(currentActivity == ActivityClass.RUN){
+                    currentActivity = ActivityClass.IDLE;
+                } else {
+                    currentActivity = ActivityClass.RUN;
+                }
+                if (annotationWriter != null) {
+                    annotationWriter.writeData(currentActivity);
+                }
+                break;
         }
     }
 
@@ -339,40 +388,25 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
                     mToggleButton2.setChecked(false);
                     mToggleButton3.setChecked(false);
                     mToggleButton4.setChecked(false);
-                    if (annotationWriter != null) {
-                        annotationWriter.writeData(ActivityClass.SIT);
-                    }
                     break;
                 case R.id.toggle_2:
                     mToggleButton1.setChecked(false);
                     mToggleButton3.setChecked(false);
                     mToggleButton4.setChecked(false);
-                    if (annotationWriter != null) {
-                        annotationWriter.writeData(ActivityClass.WALK);
-                    }
                     break;
                 case R.id.toggle_3:
                     mToggleButton1.setChecked(false);
                     mToggleButton2.setChecked(false);
                     mToggleButton4.setChecked(false);
-                    if (annotationWriter != null) {
-                        annotationWriter.writeData(ActivityClass.STAIRS_UP);
-                    }
                     break;
                 case R.id.toggle_4:
                     mToggleButton1.setChecked(false);
                     mToggleButton2.setChecked(false);
                     mToggleButton3.setChecked(false);
-                    if (annotationWriter != null) {
-                        annotationWriter.writeData(ActivityClass.RUN);
-                    }
                     break;
             }
         } else {
             compoundButton.setTextColor(getResources().getColor(R.color.grey_800));
-            if (annotationWriter != null) {
-                annotationWriter.writeData(ActivityClass.IDLE);
-            }
         }
     }
 

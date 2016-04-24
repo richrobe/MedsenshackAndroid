@@ -102,7 +102,7 @@ public class BleService extends Service implements SignalNotifier {
         public void onDisconnected(DsSensor sensor) {
             Log.d(TAG, "onDisconnected");
             mDailyHeartHandler.onSensorDisconnected();
-            if (((SimbleeEcgSensor) mSimbleeSensor).connectionLost) {
+            if (((SimbleeMedhackSensor) mSimbleeSensor).connectionLost) {
                 mDailyHeartHandler.onSensorConnectionLost();
             }
             mSimbleeSensor = null;

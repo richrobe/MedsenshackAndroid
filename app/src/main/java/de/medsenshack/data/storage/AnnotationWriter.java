@@ -131,7 +131,7 @@ public class AnnotationWriter {
         if (isWritable()) {
             try {
                 // writes the raw value into the BufferedWriter
-                mBufferedWriter.write(System.currentTimeMillis() + mDelimiter + activity.toString());
+                mBufferedWriter.write(String.valueOf(System.currentTimeMillis())+mDelimiter+activity.toString());
                 mBufferedWriter.write(mSeparator);
             } catch (Exception ignored) {
             }

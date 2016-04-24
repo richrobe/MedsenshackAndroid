@@ -138,35 +138,6 @@ public class SimbleeMedhackSensor extends DsSensor {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 if (mName.equals(gatt.getDevice().getName()) && UUID_RECEIVE.equals(characteristic.getUuid())) {
                     byte[] values = characteristic.getValue();
-                    /*switch (values[0]) {
-                        case 0x01: {
-                            int ACC_SAMPLING_RATE = 10;
-                            long currentTime = System.currentTimeMillis();
-                            long prevTime = currentTime - (1000 / ACC_SAMPLING_RATE);
-                            long prevPrevTime = currentTime - (2 * (1000 / ACC_SAMPLING_RATE));
-
-                            //sendNewData(new SimbleeMedhackAccDataFrame(values[0], timeStamp++));
-                            break;
-                        }
-                        case 0x02: {
-
-                            break;
-                        }
-                        case 0x03: {
-
-                            break;
-                        }
-                        case 0x04: {
-
-                            break;
-                        }
-                        default: {
-
-                        }
-                    }*/
-                    for (byte value : values) {
-                        sendNewData(new SimbleeMedhackAccDataFrame(value, value / 2, -value, timeStamp++));
-                    }
                 }
             }
         }
@@ -213,12 +184,9 @@ public class SimbleeMedhackSensor extends DsSensor {
                         break;
                     }
                     default: {
-
+                        Log.e(TAG, "data package with unknown sensor id!");
                     }
                 }
-                /*for (byte value : values) {
-                    sendNewData(new SimbleeMedhackAccDataFrame(value, value / 2, -value, timeStamp++));
-                }*/
             }
         }
     };
