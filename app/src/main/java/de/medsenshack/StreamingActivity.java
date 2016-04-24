@@ -107,9 +107,6 @@ public abstract class StreamingActivity extends Activity implements View.OnClick
         super.onCreate(savedInstanceState);
 
         mActionBar = getActionBar();
-        if (mActionBar != null) {
-            mActionBar.setDisplayHomeAsUpEnabled(true);
-        }
         getWindow().setExitTransition(new Explode());
         setProgressBarIndeterminate(true);
 

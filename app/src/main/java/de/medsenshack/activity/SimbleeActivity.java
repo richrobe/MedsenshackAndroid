@@ -12,6 +12,8 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.ToggleButton;
 
 import java.util.Locale;
 
@@ -22,9 +24,16 @@ import de.medsenshack.R;
 import de.medsenshack.StreamingActivity;
 
 
-public class SimbleeActivity extends StreamingActivity implements ActionBar.TabListener {
+public class SimbleeActivity extends StreamingActivity implements ActionBar.TabListener, CompoundButton.OnCheckedChangeListener {
 
     private static final String TAG = SimbleeActivity.class.getSimpleName();
+
+
+    private ToggleButton mToggleButton1;
+    private ToggleButton mToggleButton2;
+    private ToggleButton mToggleButton3;
+    private ToggleButton mToggleButton4;
+
 
     //private TextView mReceiveTextView;
     //private Button mSendButton;
@@ -79,7 +88,6 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
         mViewPager.setOffscreenPageLimit(SECTION_COUNT - 1);
 
         if (mActionBar != null) {
-            mActionBar.setDisplayHomeAsUpEnabled(true);
             mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
             // When swiping between different sections, select the corresponding
             // tab. We can also use ActionBar.Tab#select() to do this if we have
@@ -102,6 +110,15 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
                                 .setTabListener(this));
             }
         }
+
+        mToggleButton1 = (ToggleButton) findViewById(R.id.toggle_1);
+        mToggleButton2 = (ToggleButton) findViewById(R.id.toggle_2);
+        mToggleButton3 = (ToggleButton) findViewById(R.id.toggle_3);
+        mToggleButton4 = (ToggleButton) findViewById(R.id.toggle_4);
+        mToggleButton1.setOnCheckedChangeListener(this);
+        mToggleButton2.setOnCheckedChangeListener(this);
+        mToggleButton3.setOnCheckedChangeListener(this);
+        mToggleButton4.setOnCheckedChangeListener(this);
 
 //        mReceiveTextView = (TextView) findViewById(R.id.tv_receive);
 //        mSendButton = (Button) findViewById(R.id.button_send);
@@ -257,6 +274,37 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        if (b) {
+            compoundButton.setTextColor(getResources().getColor(R.color.colorAccent));
+            switch (compoundButton.getId()) {
+                case R.id.toggle_1:
+                    mToggleButton2.setChecked(false);
+                    mToggleButton3.setChecked(false);
+                    mToggleButton4.setChecked(false);
+                    break;
+                case R.id.toggle_2:
+                    mToggleButton1.setChecked(false);
+                    mToggleButton3.setChecked(false);
+                    mToggleButton4.setChecked(false);
+                    break;
+                case R.id.toggle_3:
+                    mToggleButton1.setChecked(false);
+                    mToggleButton2.setChecked(false);
+                    mToggleButton4.setChecked(false);
+                    break;
+                case R.id.toggle_4:
+                    mToggleButton1.setChecked(false);
+                    mToggleButton2.setChecked(false);
+                    mToggleButton3.setChecked(false);
+                    break;
+            }
+        } else {
+            compoundButton.setTextColor(getResources().getColor(R.color.grey_800));
+        }
     }
 
     /**

@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.util.Log;
 
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.UUID;
 
@@ -175,7 +176,7 @@ public class SimbleeMedhackSensor extends DsSensor {
 
             if (gatt.getDevice().getName().equals(mName)) {
                 byte[] values = characteristic.getValue();
-                //Log.d(TAG, "values: " + Arrays.toString(values));
+                Log.d(TAG, "values: " + Arrays.toString(values));
                 /*switch (values[0]) {
                     case 0x00: {
 
