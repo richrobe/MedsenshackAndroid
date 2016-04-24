@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+
     <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/cv_general_1"
         android:layout_width="match_parent"
@@ -13,7 +14,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
-        android:layout_weight="15"
+        android:layout_weight="50"
         card_view:cardCornerRadius="2dp"
         card_view:cardElevation="5dp">
 
@@ -21,11 +22,145 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Heart Rate" />
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true">
 
+                <ImageView
+                    android:id="@+id/ic_activity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/tv_activity"
+                    android:layout_alignTop="@+id/tv_activity"
+                    android:contentDescription="@string/string_hr_curr"
+                    android:src="@drawable/ic_altitude" />
+
+                <TextView
+                    android:id="@+id/tv_activity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/tv_activity"
+                    android:layout_toEndOf="@id/ic_activity"
+                    android:fontFamily="sans-serif-light"
+                    android:text="@string/placeholder_activity"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/cv_general_2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_weight="50"
+        card_view:cardCornerRadius="2dp"
+        card_view:cardElevation="5dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="4dp">
+
+                <ImageView
+                    android:id="@+id/ic_hr_avg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/tv_hr_avg"
+                    android:layout_alignTop="@+id/tv_hr_avg"
+                    android:contentDescription="@string/string_hr_avg"
+                    android:src="@drawable/ic_heart_avg" />
+
+                <TextView
+                    android:id="@+id/tv_hr_avg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/ic_hr_avg"
+                    android:fontFamily="sans-serif-light"
+                    android:text="@string/placeholder_hr"
+                    android:textColor="@color/heart_rate"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_alignBottom="@id/tv_hr_avg"
+                    android:layout_alignTop="@id/tv_hr_avg"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_toEndOf="@+id/tv_hr_avg"
+                    android:fontFamily="sans-serif-light"
+                    android:gravity="bottom"
+                    android:text="@string/unit_bpm"
+                    android:textColor="@color/heart_rate"
+                    android:textSize="16sp" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/cv_general_3"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_weight="50"
+        card_view:cardCornerRadius="2dp"
+        card_view:cardElevation="5dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="4dp">
+
+                <ImageView
+                    android:id="@+id/ic_stress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/tv_stress"
+                    android:layout_alignTop="@+id/tv_stress"
+                    android:src="@drawable/ic_calories" />
+
+                <TextView
+                    android:id="@+id/tv_stress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/ic_stress"
+                    android:fontFamily="sans-serif-light"
+                    android:text="@string/placeholder_stress"
+                    android:textColor="@color/stress"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 

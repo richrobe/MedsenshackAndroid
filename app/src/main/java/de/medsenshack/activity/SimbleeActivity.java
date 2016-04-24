@@ -6,12 +6,15 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Chronometer;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
@@ -37,6 +40,18 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
     private ToggleButton mToggleButton4;
 
     private AnnotationWriter annotationWriter = null;
+
+    private Chronometer mChronometer;
+    private long mStartTime;
+    private long mLastStopTime;
+    private long mElapsedTime;
+
+    /**
+     * {@link android.app.Fragment} for showing general ECG information
+     */
+    private static GeneralFragment mGeneralFragment;
+    private static EcgGsrFragment mEcgGsrFragment;
+    private static AccGyrFragment mAccGyrFragment;
 
 
     //private TextView mReceiveTextView;
@@ -123,6 +138,7 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
         mToggleButton2.setOnCheckedChangeListener(this);
         mToggleButton3.setOnCheckedChangeListener(this);
         mToggleButton4.setOnCheckedChangeListener(this);
+        mChronometer = (Chronometer) findViewById(R.id.chronometer);
 
 //        mReceiveTextView = (TextView) findViewById(R.id.tv_receive);
 //        mSendButton = (Button) findViewById(R.id.button_send);
@@ -213,6 +229,23 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
     }
 
     @Override
+    public void onStartStreaming() {
+        super.onStartStreaming();
+        annotationWriter = new AnnotationWriter("annotation");
+        annotationWriter.prepareWriter();
+        mChronometer.setBase(SystemClock.elapsedRealtime());
+        mChronometer.start();
+    }
+
+    @Override
+    public void onStopStreaming() {
+        super.onStopStreaming();
+        mChronometer.stop();
+        annotationWriter.completeWriter();
+        annotationWriter = null;
+    }
+
+    @Override
     public void onSensorDisconnected() {
         super.onSensorDisconnected();
         //mSendButton.setEnabled(false);
@@ -221,20 +254,6 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
     @Override
     public void onSegmentationFinished() {
 
-    }
-
-    @Override
-    public void onStartStreaming() {
-        super.onStartStreaming();
-        annotationWriter = new AnnotationWriter("annotation");
-        annotationWriter.prepareWriter();
-    }
-
-    @Override
-    public void onStopStreaming() {
-        super.onStopStreaming();
-        annotationWriter.completeWriter();
-        annotationWriter = null;
     }
 
     @Override
@@ -303,7 +322,7 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
                     mToggleButton2.setChecked(false);
                     mToggleButton3.setChecked(false);
                     mToggleButton4.setChecked(false);
-                    if(annotationWriter!=null) {
+                    if (annotationWriter != null) {
                         annotationWriter.writeData(ActivityClass.SIT);
                     }
                     break;
@@ -311,7 +330,7 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
                     mToggleButton1.setChecked(false);
                     mToggleButton3.setChecked(false);
                     mToggleButton4.setChecked(false);
-                    if(annotationWriter!=null) {
+                    if (annotationWriter != null) {
                         annotationWriter.writeData(ActivityClass.WALK);
                     }
                     break;
@@ -319,7 +338,7 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
                     mToggleButton1.setChecked(false);
                     mToggleButton2.setChecked(false);
                     mToggleButton4.setChecked(false);
-                    if(annotationWriter!=null) {
+                    if (annotationWriter != null) {
                         annotationWriter.writeData(ActivityClass.STAIRS_UP);
                     }
                     break;
@@ -327,17 +346,45 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
                     mToggleButton1.setChecked(false);
                     mToggleButton2.setChecked(false);
                     mToggleButton3.setChecked(false);
-                    if(annotationWriter!=null) {
+                    if (annotationWriter != null) {
                         annotationWriter.writeData(ActivityClass.RUN);
                     }
                     break;
             }
         } else {
             compoundButton.setTextColor(getResources().getColor(R.color.grey_800));
-            if(annotationWriter!=null) {
+            if (annotationWriter != null) {
                 annotationWriter.writeData(ActivityClass.IDLE);
             }
         }
+    }
+
+    @Override
+    protected void onPauseButtonClick() {
+        super.onPauseButtonClick();
+        if (!mStreaming) {
+            return;
+        }
+
+        if (mPauseButtonPressed) {
+            mElapsedTime = SystemClock.elapsedRealtime() - mChronometer.getBase();
+            Log.d(TAG, "elapsed time pause: " + mElapsedTime);
+            mChronometer.stop();
+            mLastStopTime = SystemClock.elapsedRealtime();
+        } else {
+            long pauseInterval = SystemClock.elapsedRealtime() - mLastStopTime;
+            mChronometer.setBase(mChronometer.getBase() + pauseInterval);
+            mChronometer.start();
+        }
+    }
+
+    @Override
+    protected void onStopButtonClick() {
+        super.onStopButtonClick();
+        // stop Chronometer
+        mChronometer.stop();
+        // compute running time
+        mElapsedTime = SystemClock.elapsedRealtime() - mChronometer.getBase();
     }
 
     /**

@@ -108,7 +108,7 @@
     <string name="string_fab">FAB</string>
     <string name="string_hr_curr">Curr HR</string>
     <string name="string_hr_avg">Avg HR</string>
-    <string name="string_rr_avg">Avg RR</string>
+    <string name="string_rr_avg">Stre</string>
     <string name="string_hr_min_max">Min/Max HR</string>
     <string name="string_qrsta_avg">Avg QRSTA</string>
     <string name="string_num_normal">Num Beats</string>
@@ -130,17 +130,9 @@
 
 
     <!-- Placeholders -->
-    <string name="placeholder_slash"> / %1$s</string>
-    <string name="placeholder_percent">%1$s %%</string>
-    <string name="placeholder_pipe">%1$s | %2$s</string>
-    <string name="placeholder_std_rr">Avg. Std: %1$s</string>
-    <string name="placeholder_rms_sd">RMS SD: %1$s</string>
-    <string name="placeholder_std_sd">Std SD: %1$s</string>
-    <string name="placeholder_rr_50">RR50: %1$s (%2$s %%)</string>
-    <string name="placeholder_rr_20">RR20: %1$s (%2$s %%)</string>
-    <string name="placeholder_rr_total">Total RR: %1$s</string>
-    <string name="placeholder_orientation">Pitch: %1$s°</string>
-    <string name="placeholder_steps">Steps: %1$s</string>
+    <string name="placeholder_activity">Activity: %1$s</string>
+    <string name="placeholder_hr">HR: %1$s</string>
+    <string name="placeholder_stress">Stress: %1$s</string>
     <string name="title_activity_daily_hrv_result">DailyHrvResult</string>
     <string name="title_activity_simblee">SimbleeActivity</string>
 </resources>

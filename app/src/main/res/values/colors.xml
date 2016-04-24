@@ -9,6 +9,11 @@
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
 
+
+    <color name="heart_rate">#f50057</color>
+    <color name="stress">#D32F2F</color>
+
+
     <!-- Pause/Stop button colors -->
     <color name="button_pause_color">#ffc107</color>
     <color name="button_pause_color_pressed">#ffa000</color>

@@ -176,7 +176,22 @@ public class SimbleeMedhackSensor extends DsSensor {
 
             if (gatt.getDevice().getName().equals(mName)) {
                 byte[] values = characteristic.getValue();
-                Log.d(TAG, "values: " + Arrays.toString(values));
+                //Log.d(TAG, "values: " + Arrays.toString(values));
+                int id = (values[1] & 0b0000000011110000) >>> 4;
+                int tmp1 = ((int) values[1]) & 0b0000000000001111;
+                int tmp2 = ((int) values[0]) & 0b0000000011111111;
+                int timestamp = (tmp1 << 8) | tmp2;
+
+                String vals = "id: " + id + ", timestamp: " + timestamp;
+                vals += ", vals: ";
+                for (int i = 2; i < values.length - 1; i += 2) {
+                    tmp1 = ((int) values[i + 1]) & 0b000000011111111;
+                    tmp2 = ((int) values[i]) & 0b0000000011111111;
+                    vals += (((tmp1 << 8) | tmp2) + ", ");
+                }
+
+                Log.d(TAG, "bytes: " + Arrays.toString(values));
+                Log.d(TAG, vals);
                 /*switch (values[0]) {
                     case 0x00: {
 
@@ -186,9 +201,9 @@ public class SimbleeMedhackSensor extends DsSensor {
 
                     }
                 }*/
-                for (byte value : values) {
+                /*for (byte value : values) {
                     sendNewData(new SimbleeMedhackAccDataFrame(value, value / 2, -value, timeStamp++));
-                }
+                }*/
             }
         }
     };
