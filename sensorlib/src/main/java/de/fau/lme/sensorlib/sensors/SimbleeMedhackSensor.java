@@ -17,6 +17,7 @@ import java.util.UUID;
 import de.fau.lme.sensorlib.DsSensorManager;
 import de.fau.lme.sensorlib.SensorDataProcessor;
 import de.fau.lme.sensorlib.dataframe.SimbleeMedhackAccDataFrame;
+import de.fau.lme.sensorlib.dataframe.SimbleeMedhackEcgDataFrame;
 
 /**
  * Created by Robert on 03.01.16.
@@ -42,6 +43,9 @@ public class SimbleeMedhackSensor extends DsSensor {
     public final static UUID UUID_DISCONNECT = UUID.fromString("2d30c084-f39f-4ce6-923f-3484ea480596");
     public final static UUID UUID_CLIENT_CONFIGURATION = UUID.fromString("000002902-0000-1000-8000-00805F9B34FB");
 
+
+    private final int ACC_SAMPLING_RATE = 10;
+    private final int ECG_SAMPLING_RATE = 250;
 
     private Context mContext;
 
@@ -137,10 +141,10 @@ public class SimbleeMedhackSensor extends DsSensor {
                     byte[] values = characteristic.getValue();
                     /*switch (values[0]) {
                         case 0x01: {
-                            int accSamplingRate = 10;
+                            int ACC_SAMPLING_RATE = 10;
                             long currentTime = System.currentTimeMillis();
-                            long prevTime = currentTime - (1000 / accSamplingRate);
-                            long prevPrevTime = currentTime - (2 * (1000 / accSamplingRate));
+                            long prevTime = currentTime - (1000 / ACC_SAMPLING_RATE);
+                            long prevPrevTime = currentTime - (2 * (1000 / ACC_SAMPLING_RATE));
 
                             //sendNewData(new SimbleeMedhackAccDataFrame(values[0], timeStamp++));
                             break;
@@ -175,6 +179,7 @@ public class SimbleeMedhackSensor extends DsSensor {
                                             BluetoothGattCharacteristic characteristic) {
 
             if (gatt.getDevice().getName().equals(mName)) {
+                long time = System.currentTimeMillis();
                 byte[] values = characteristic.getValue();
                 //Log.d(TAG, "values: " + Arrays.toString(values));
                 int id = (values[1] & 0b0000000011110000) >>> 4;
@@ -182,25 +187,35 @@ public class SimbleeMedhackSensor extends DsSensor {
                 int tmp2 = ((int) values[0]) & 0b0000000011111111;
                 int timestamp = (tmp1 << 8) | tmp2;
 
+                int[] data = new int[(values.length-2)/2];
                 String vals = "id: " + id + ", timestamp: " + timestamp;
                 vals += ", vals: ";
                 for (int i = 2; i < values.length - 1; i += 2) {
                     tmp1 = ((int) values[i + 1]) & 0b000000011111111;
                     tmp2 = ((int) values[i]) & 0b0000000011111111;
                     vals += (((tmp1 << 8) | tmp2) + ", ");
+                    data[i-2]=((tmp1 << 8) | tmp2);
                 }
 
                 Log.d(TAG, "bytes: " + Arrays.toString(values));
                 Log.d(TAG, vals);
-                /*switch (values[0]) {
-                    case 0x00: {
-
+                switch (id) {
+                    case 1: {
+                        for(int i = 0; i < data.length/3; i++) {
+                            sendNewData(new SimbleeMedhackAccDataFrame(data[i*3],data[i*3+1],data[i*3+2],time-(data.length/3-1-i)*(1000/ACC_SAMPLING_RATE)));
+                        }
+                        break;
+                    }
+                    case 3: {
+                        for(int i = 0; i < data.length; i++) {
+                            sendNewData(new SimbleeMedhackEcgDataFrame(data[i],time-(data.length-1-i)*(1000/ECG_SAMPLING_RATE)));
+                        }
                         break;
                     }
                     default: {
 
                     }
-                }*/
+                }
                 /*for (byte value : values) {
                     sendNewData(new SimbleeMedhackAccDataFrame(value, value / 2, -value, timeStamp++));
                 }*/
