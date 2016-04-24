@@ -110,10 +110,8 @@ public class AnnotationWriter {
 
     /**
      * Prepares the {@link DataWriter}
-     *
-     * @param samplingRate The sensor's sampling rate
      */
-    public void prepareWriter(double samplingRate) {
+    public void prepareWriter() {
         FileWriter fw;
         if (mStorageWritable && mECGFileCreated) {
             try {
@@ -136,7 +134,7 @@ public class AnnotationWriter {
         if (isWritable()) {
             try {
                 // writes the raw value into the BufferedWriter
-                mBufferedWriter.write(activity.toString());
+                mBufferedWriter.write(System.currentTimeMillis()+mDelimiter+activity.toString());
                 mBufferedWriter.write(mSeparator);
             } catch (Exception ignored) {
             }

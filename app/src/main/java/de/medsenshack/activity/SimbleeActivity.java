@@ -22,6 +22,8 @@ import de.fau.lme.plotview.PlotView;
 import de.fau.lme.sensorlib.dataframe.SimbleeMedhackDataFrame;
 import de.medsenshack.R;
 import de.medsenshack.StreamingActivity;
+import de.medsenshack.data.ActivityClass;
+import de.medsenshack.data.storage.AnnotationWriter;
 
 
 public class SimbleeActivity extends StreamingActivity implements ActionBar.TabListener, CompoundButton.OnCheckedChangeListener {
@@ -33,6 +35,8 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
     private ToggleButton mToggleButton2;
     private ToggleButton mToggleButton3;
     private ToggleButton mToggleButton4;
+
+    private AnnotationWriter annotationWriter = null;
 
 
     //private TextView mReceiveTextView;
@@ -220,6 +224,20 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
     }
 
     @Override
+    public void onStartStreaming() {
+        super.onStartStreaming();
+        annotationWriter = new AnnotationWriter("annotation");
+        annotationWriter.prepareWriter();
+    }
+
+    @Override
+    public void onStopStreaming() {
+        super.onStopStreaming();
+        annotationWriter.completeWriter();
+        annotationWriter = null;
+    }
+
+    @Override
     public void onDataReceived(SimbleeMedhackDataFrame data) {
 
         /*if (mLiveAccXPlot != null) {
@@ -285,25 +303,40 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
                     mToggleButton2.setChecked(false);
                     mToggleButton3.setChecked(false);
                     mToggleButton4.setChecked(false);
+                    if(annotationWriter!=null) {
+                        annotationWriter.writeData(ActivityClass.SIT);
+                    }
                     break;
                 case R.id.toggle_2:
                     mToggleButton1.setChecked(false);
                     mToggleButton3.setChecked(false);
                     mToggleButton4.setChecked(false);
+                    if(annotationWriter!=null) {
+                        annotationWriter.writeData(ActivityClass.WALK);
+                    }
                     break;
                 case R.id.toggle_3:
                     mToggleButton1.setChecked(false);
                     mToggleButton2.setChecked(false);
                     mToggleButton4.setChecked(false);
+                    if(annotationWriter!=null) {
+                        annotationWriter.writeData(ActivityClass.STAIRS_UP);
+                    }
                     break;
                 case R.id.toggle_4:
                     mToggleButton1.setChecked(false);
                     mToggleButton2.setChecked(false);
                     mToggleButton3.setChecked(false);
+                    if(annotationWriter!=null) {
+                        annotationWriter.writeData(ActivityClass.RUN);
+                    }
                     break;
             }
         } else {
             compoundButton.setTextColor(getResources().getColor(R.color.grey_800));
+            if(annotationWriter!=null) {
+                annotationWriter.writeData(ActivityClass.IDLE);
+            }
         }
     }
 
