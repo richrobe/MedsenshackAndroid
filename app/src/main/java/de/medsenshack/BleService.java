@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
+import de.fau.lme.plotview.Plot;
 import de.fau.lme.sensorlib.DsSensorManager;
 import de.fau.lme.sensorlib.SensorDataProcessor;
 import de.fau.lme.sensorlib.dataframe.SensorDataFrame;
@@ -19,7 +20,8 @@ import de.fau.lme.sensorlib.dataframe.SimbleeMedhackGalvDataFrame;
 import de.fau.lme.sensorlib.dataframe.SimbleeMedhackGyroDataFrame;
 import de.fau.lme.sensorlib.sensors.DsSensor;
 import de.fau.lme.sensorlib.sensors.SimbleeEcgSensor;
-import de.fau.lme.plotview.Plot;
+import de.fau.lme.sensorlib.sensors.SimbleeMedhackSensor;
+import de.medsenshack.data.PanTompkins;
 import de.medsenshack.data.storage.AccDataWriter;
 import de.medsenshack.data.storage.EcgDataWriter;
 import de.medsenshack.data.storage.GalvDataWriter;
@@ -48,7 +50,7 @@ public class BleService extends Service implements SignalNotifier {
      * Static member variable containing all algorithms for the ECG processing according to
      * the algorithm provided by Pan and Tompkins.
      */
-    //public static PanTompkins mPants;
+    public static PanTompkins mPants;
     /**
      * Static member variable for the QRS detection validation.
      */
@@ -110,7 +112,7 @@ public class BleService extends Service implements SignalNotifier {
         public void onStartStreaming(DsSensor sensor) {
             Log.d(TAG, "onStartStreaming");
             // initialize Pants with sampling rate
-            //mPants = new PanTompkins((int) mSamplingRate);
+            mPants = new PanTompkins(SimbleeMedhackSensor.ECG_SAMPLING_RATE);
             // Set start time
             mStartTime = System.currentTimeMillis();
             accWriter = new AccDataWriter("acc");
@@ -224,16 +226,31 @@ public class BleService extends Service implements SignalNotifier {
     }
 
     private void onSimbleeEvent(SimbleeMedhackDataFrame data) {
-        mDailyHeartHandler.onDataReceived(data);
-        if(data instanceof SimbleeMedhackAccDataFrame){
+        if (data instanceof SimbleeMedhackAccDataFrame) {
+            Log.e(TAG, "ACC");
             accWriter.writeData(data);
         } else if (data instanceof SimbleeMedhackEcgDataFrame) {
+            Log.e(TAG, "ECG");
             ecgWriter.writeData(data);
+            if (mPants != null) {
+                // next step of processing pipeline
+                //Log.e(TAG, "NEW pants: " + tmp.ecgRaw + ", " + tmp.timeStamp);
+                mPants.next(((SimbleeMedhackEcgDataFrame) data).ecgRaw, ((SimbleeMedhackEcgDataFrame) data).timeStamp);
+
+                if (PanTompkins.QRS.qrsCurrent.segState == PanTompkins.QRS.SegmentationStatus.FINISHED) {
+                    mDailyHeartHandler.onSegmentationFinished();
+
+                    // inform Pants that the beat has been processed
+                    PanTompkins.QRS.qrsCurrent.segState = PanTompkins.QRS.SegmentationStatus.PROCESSED;
+
+                }
+            }
         } else if (data instanceof SimbleeMedhackGalvDataFrame) {
             galvWriter.writeData(data);
-        } else if (data instanceof SimbleeMedhackGyroDataFrame){
+        } else if (data instanceof SimbleeMedhackGyroDataFrame) {
             gyroWriter.writeData(data);
         }
+        mDailyHeartHandler.onDataReceived(data);
     }
 
     public void setDailyHeartHandler(DailyHeartHandler handler) {

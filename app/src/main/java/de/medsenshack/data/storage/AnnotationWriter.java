@@ -6,13 +6,10 @@ import android.util.Log;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import de.fau.lme.sensorlib.dataframe.SensorDataFrame;
-import de.fau.lme.sensorlib.dataframe.SimbleeMedhackDataFrame;
 import de.medsenshack.data.ActivityClass;
 
 /**
@@ -134,7 +131,7 @@ public class AnnotationWriter {
         if (isWritable()) {
             try {
                 // writes the raw value into the BufferedWriter
-                mBufferedWriter.write(System.currentTimeMillis()+mDelimiter+activity.toString());
+                mBufferedWriter.write(System.currentTimeMillis() + mDelimiter + activity.toString());
                 mBufferedWriter.write(mSeparator);
             } catch (Exception ignored) {
             }

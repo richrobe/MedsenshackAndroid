@@ -16,16 +16,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Chronometer;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import java.text.DecimalFormat;
 import java.util.Locale;
 
 import de.fau.lme.plotview.Plot;
 import de.fau.lme.plotview.PlotView;
+import de.fau.lme.plotview.SamplingPlot;
+import de.fau.lme.sensorlib.dataframe.SimbleeMedhackAccDataFrame;
 import de.fau.lme.sensorlib.dataframe.SimbleeMedhackDataFrame;
+import de.fau.lme.sensorlib.dataframe.SimbleeMedhackEcgDataFrame;
+import de.fau.lme.sensorlib.dataframe.SimbleeMedhackGalvDataFrame;
+import de.fau.lme.sensorlib.dataframe.SimbleeMedhackGyroDataFrame;
+import de.medsenshack.BleService;
 import de.medsenshack.R;
 import de.medsenshack.StreamingActivity;
 import de.medsenshack.data.ActivityClass;
+import de.medsenshack.data.PanTompkins;
 import de.medsenshack.data.storage.AnnotationWriter;
 
 
@@ -52,21 +61,6 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
     private static GeneralFragment mGeneralFragment;
     private static EcgGsrFragment mEcgGsrFragment;
     private static AccGyrFragment mAccGyrFragment;
-
-
-    //private TextView mReceiveTextView;
-    //private Button mSendButton;
-    //private EditText mEditText;
-    private PlotView mLiveAccPlotView;
-    private static Plot mLiveAccXPlot;
-    private static Plot mLiveAccYPlot;
-    private static Plot mLiveAccZPlot;
-
-
-    private PlotView mLiveEcgPlotView;
-    private static Plot mLiveEcgPlot;
-    private PlotView mLiveGsrPlotView;
-    private static Plot mLiveGsrPlot;
 
     private static final int SECTION_COUNT = 3;
     private static Context sContext;
@@ -140,30 +134,30 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
         mToggleButton4.setOnCheckedChangeListener(this);
         mChronometer = (Chronometer) findViewById(R.id.chronometer);
 
-//        mReceiveTextView = (TextView) findViewById(R.id.tv_receive);
-//        mSendButton = (Button) findViewById(R.id.button_send);
-//        mSendButton.setOnClickListener(this);
-//        mSendButton.setEnabled(false);
-//        mEditText = (EditText) findViewById(R.id.edit_text);
+        // mReceiveTextView = (TextView) findViewById(R.id.tv_receive);
+        // mSendButton = (Button) findViewById(R.id.button_send);
+        // mSendButton.setOnClickListener(this);
+        // mSendButton.setEnabled(false);
+        // mEditText = (EditText) findViewById(R.id.edit_text);
 
         /*mLiveAccPlotView = (PlotView) findViewById(R.id.pv_live_acc);
         mLiveEcgPlotView = (PlotView) findViewById(R.id.pv_live_ecg);
         mLiveGsrPlotView = (PlotView) findViewById(R.id.pv_live_gsr);
 
-        if (mLiveAccXPlot == null) {
+        if (mAccXPlot == null) {
             int color = getResources().getColor(R.color.status_bar_connected);
-            mLiveAccXPlot = new SamplingPlot("", Plot.generatePlotPaint(5f, 255,
+            mAccXPlot = new SamplingPlot("", Plot.generatePlotPaint(5f, 255,
                     ((color >> 16) & 0xFF), ((color >> 8) & 0xFF), (color & 0xFF)),
                     Plot.PlotStyle.LINE, 250000);
-            ((SamplingPlot) mLiveAccXPlot).setViewport(250, 10);
-            mLiveAccXPlot.hideAxis(true);
+            ((SamplingPlot) mAccXPlot).setViewport(250, 10);
+            mAccXPlot.hideAxis(true);
 
             color = getResources().getColor(R.color.status_bar_connecting);
-            mLiveAccYPlot = new SamplingPlot("", Plot.generatePlotPaint(5f, 255,
+            mAccYPlot = new SamplingPlot("", Plot.generatePlotPaint(5f, 255,
                     ((color >> 16) & 0xFF), ((color >> 8) & 0xFF), (color & 0xFF)),
                     Plot.PlotStyle.LINE, 250000);
-            ((SamplingPlot) mLiveAccYPlot).setViewport(250, 10);
-            mLiveAccYPlot.hideAxis(true);
+            ((SamplingPlot) mAccYPlot).setViewport(250, 10);
+            mAccYPlot.hideAxis(true);
 
             color = getResources().getColor(R.color.status_bar_simulating);
             mLiveAccZPlot = new SamplingPlot("", Plot.generatePlotPaint(5f, 255,
@@ -186,8 +180,8 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
             ((SamplingPlot) mLiveGsrPlot).setViewport(250, 10);
             mLiveGsrPlot.hideAxis(true);
         } else {
-            mLiveAccXPlot.clear();
-            mLiveAccYPlot.clear();
+            mAccXPlot.clear();
+            mAccYPlot.clear();
             mLiveAccZPlot.clear();
             mLiveEcgPlot.clear();
             mLiveGsrPlot.clear();
@@ -196,8 +190,8 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
             mLiveGsrPlotView.requestRedraw(false);
         }
         mLiveAccPlotView.setVisibility(View.VISIBLE);
-        mLiveAccPlotView.attachPlot(mLiveAccXPlot);
-        mLiveAccPlotView.attachPlot(mLiveAccYPlot);
+        mLiveAccPlotView.attachPlot(mAccXPlot);
+        mLiveAccPlotView.attachPlot(mAccYPlot);
         mLiveAccPlotView.attachPlot(mLiveAccZPlot);
         mLiveAccPlotView.setMaxRedrawRate(40);
 
@@ -211,15 +205,40 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
 
         mFABToggle = false;
         mPauseButtonPressed = false;
+
+        // 500 ms after creating the Activity, get an instance of the Fragments
+        mRunnableHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mGeneralFragment == null) {
+                    mGeneralFragment = (GeneralFragment) mSectionsPagerAdapter.getRegisteredFragment(0);
+                }
+                if (mAccGyrFragment == null) {
+                    mAccGyrFragment = (AccGyrFragment) mSectionsPagerAdapter.getRegisteredFragment(1);
+                }
+                if (mEcgGsrFragment == null) {
+                    mEcgGsrFragment = (EcgGsrFragment) mSectionsPagerAdapter.getRegisteredFragment(2);
+                }
+            }
+        }, 500);
     }
 
     @Override
     protected void clearUi() {
-        /*mLiveAccXPlot.clear();
-        mLiveAccYPlot.clear();
+        /*mAccXPlot.clear();
+        mAccYPlot.clear();
         mLiveAccZPlot.clear();
         mLiveEcgPlot.clear();
         mLiveGsrPlot.clear();*/
+        if (mAccGyrFragment != null) {
+            mAccGyrFragment.resetUi();
+        }
+        if (mEcgGsrFragment != null) {
+            mEcgGsrFragment.resetUi();
+        }
+        if (mGeneralFragment != null) {
+            mGeneralFragment.resetUi();
+        }
     }
 
     @Override
@@ -259,17 +278,15 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
     @Override
     public void onDataReceived(SimbleeMedhackDataFrame data) {
 
-        /*if (mLiveAccXPlot != null) {
-            if (data instanceof SimbleeMedhackAccDataFrame) {
-                SimbleeMedhackAccDataFrame tmp = (SimbleeMedhackAccDataFrame) data;
-                ((SamplingPlot) mLiveAccXPlot).addValue((float) tmp.accX / 2, tmp.timeStamp);
-
-                ((SamplingPlot) mLiveAccYPlot).addValue((float) tmp.accY, tmp.timeStamp);
-
-                ((SamplingPlot) mLiveAccZPlot).addValue((float) tmp.accZ, tmp.timeStamp);
-            }
-
-        }*/
+        if (mAccGyrFragment != null && (data instanceof SimbleeMedhackAccDataFrame || data instanceof SimbleeMedhackGyroDataFrame)) {
+            mAccGyrFragment.update(data);
+        }
+        if (mEcgGsrFragment != null && (data instanceof SimbleeMedhackEcgDataFrame || data instanceof SimbleeMedhackGalvDataFrame)) {
+            mEcgGsrFragment.update(data);
+        }
+        if (mGeneralFragment != null) {
+            mGeneralFragment.update();
+        }
     }
 
     @Override
@@ -398,6 +415,12 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
 
+        private TextView mActivityTextView;
+        private TextView mHeartRateTextView;
+        private TextView mStressTextView;
+        DecimalFormat df2 = new DecimalFormat("00");
+
+
         /**
          * Returns a new instance of this fragment for the given section
          * number.
@@ -414,7 +437,13 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_general, container, false);
+            mActivityTextView = (TextView) rootView.findViewById(R.id.tv_activity);
+            mHeartRateTextView = (TextView) rootView.findViewById(R.id.tv_hr_avg);
+            mStressTextView = (TextView) rootView.findViewById(R.id.tv_stress);
 
+            mActivityTextView.setText(SimbleeActivity.sContext.getString(R.string.placeholder_activity, df2.format(0)));
+            mHeartRateTextView.setText(SimbleeActivity.sContext.getString(R.string.placeholder_hr, df2.format(0)));
+            mStressTextView.setText(SimbleeActivity.sContext.getString(R.string.placeholder_stress, df2.format(0)));
             return rootView;
         }
 
@@ -423,12 +452,19 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
          */
         public void update() {
 
+            // set min and max heart rate
+            if (!PanTompkins.learning) {
+                mHeartRateTextView.setText(BleService.mPants.heartRateStats.formatValue());
+            }
         }
 
         /**
          * Resets all Views of this {@link android.app.Fragment}.
          */
         public void resetUi() {
+            mActivityTextView.setText(SimbleeActivity.sContext.getString(R.string.placeholder_activity, df2.format(0)));
+            mHeartRateTextView.setText(SimbleeActivity.sContext.getString(R.string.placeholder_hr, df2.format(0)));
+            mStressTextView.setText(SimbleeActivity.sContext.getString(R.string.placeholder_stress, df2.format(0)));
         }
     }
 
@@ -443,6 +479,11 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+
+        private static Plot mAccXPlot;
+        private static Plot mAccYPlot;
+        private static Plot mAccZPlot;
+        private PlotView mAccGyrPlotView;
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -461,14 +502,59 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_acc_gyr, container, false);
 
+            mAccGyrPlotView = (PlotView) rootView.findViewById(R.id.pv_acc_gyr);
+
+            if (mAccXPlot == null) {
+                int color = getResources().getColor(R.color.status_bar_connected);
+                mAccXPlot = new SamplingPlot("", Plot.generatePlotPaint(5f, 255,
+                        ((color >> 16) & 0xFF), ((color >> 8) & 0xFF), (color & 0xFF)),
+                        Plot.PlotStyle.LINE, 250000);
+                ((SamplingPlot) mAccXPlot).setViewport(250, 10);
+                mAccXPlot.hideAxis(true);
+
+                color = getResources().getColor(R.color.status_bar_connecting);
+                mAccYPlot = new SamplingPlot("", Plot.generatePlotPaint(5f, 255,
+                        ((color >> 16) & 0xFF), ((color >> 8) & 0xFF), (color & 0xFF)),
+                        Plot.PlotStyle.LINE, 250000);
+                ((SamplingPlot) mAccYPlot).setViewport(250, 10);
+                mAccYPlot.hideAxis(true);
+
+                color = getResources().getColor(R.color.status_bar_simulating);
+                mAccZPlot = new SamplingPlot("", Plot.generatePlotPaint(5f, 255,
+                        ((color >> 16) & 0xFF), ((color >> 8) & 0xFF), (color & 0xFF)),
+                        Plot.PlotStyle.LINE, 250000);
+                ((SamplingPlot) mAccZPlot).setViewport(250, 10);
+                mAccZPlot.hideAxis(true);
+            } else {
+                mAccXPlot.clear();
+                mAccYPlot.clear();
+                mAccZPlot.clear();
+                mAccGyrPlotView.requestRedraw(false);
+            }
+
+            mAccGyrPlotView.setVisibility(View.VISIBLE);
+            mAccGyrPlotView.attachPlot(mAccXPlot);
+            mAccGyrPlotView.attachPlot(mAccYPlot);
+            mAccGyrPlotView.attachPlot(mAccZPlot);
+            mAccGyrPlotView.setMaxRedrawRate(40);
+
             return rootView;
         }
 
         /**
          * Updates all Views of this {@link android.app.Fragment}.
          */
-        public void update() {
+        public void update(SimbleeMedhackDataFrame data) {
 
+            if (mAccXPlot != null) {
+                if (data instanceof SimbleeMedhackAccDataFrame) {
+                    SimbleeMedhackAccDataFrame tmp = (SimbleeMedhackAccDataFrame) data;
+                    ((SamplingPlot) mAccXPlot).addValue((float) tmp.accX, tmp.timeStamp);
+                    ((SamplingPlot) mAccYPlot).addValue((float) tmp.accY, tmp.timeStamp);
+                    ((SamplingPlot) mAccZPlot).addValue((float) tmp.accZ, tmp.timeStamp);
+                }
+
+            }
         }
 
         /**
@@ -482,6 +568,10 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
      * A {@link android.app.Fragment} showing general information.
      */
     public static class EcgGsrFragment extends Fragment {
+
+        private static Plot mEcgPlot;
+        private static Plot mGsrPlot;
+        private PlotView mEcgGsrPlotView;
 
         /**
          * The fragment argument representing the section number for this
@@ -506,13 +596,37 @@ public class SimbleeActivity extends StreamingActivity implements ActionBar.TabL
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_ecg_gsr, container, false);
 
+            mEcgGsrPlotView = (PlotView) rootView.findViewById(R.id.pv_ecg_gsr);
+
+            int color = getResources().getColor(R.color.colorAccentDark);
+            mEcgPlot = new SamplingPlot("", Plot.generatePlotPaint(5f, 255,
+                    ((color >> 16) & 0xFF), ((color >> 8) & 0xFF), (color & 0xFF)),
+                    Plot.PlotStyle.LINE, 250000);
+            ((SamplingPlot) mEcgPlot).setViewport(250, 10);
+            mEcgPlot.hideAxis(true);
+
+            color = getResources().getColor(R.color.colorAccent);
+            mGsrPlot = new SamplingPlot("", Plot.generatePlotPaint(5f, 255,
+                    ((color >> 16) & 0xFF), ((color >> 8) & 0xFF), (color & 0xFF)),
+                    Plot.PlotStyle.LINE, 250000);
+            ((SamplingPlot) mGsrPlot).setViewport(10, 10);
+            mGsrPlot.hideAxis(true);
+            mEcgGsrPlotView.attachPlot(mEcgPlot);
+            mEcgGsrPlotView.attachPlot(mGsrPlot);
+            mEcgGsrPlotView.setMaxRedrawRate(40);
+
             return rootView;
         }
 
         /**
          * Updates all Views of this {@link android.app.Fragment}.
          */
-        public void update() {
+        public void update(SimbleeMedhackDataFrame data) {
+            if (data instanceof SimbleeMedhackEcgDataFrame) {
+                ((SamplingPlot) mEcgPlot).addValue((float) ((SimbleeMedhackEcgDataFrame) data).ecgRaw, ((SimbleeMedhackEcgDataFrame) data).timeStamp);
+            } else if (data instanceof SimbleeMedhackGalvDataFrame) {
+                ((SamplingPlot) mGsrPlot).addValue((float) ((SimbleeMedhackGalvDataFrame) data).galv, ((SimbleeMedhackGalvDataFrame) data).timeStamp);
+            }
 
         }
 
